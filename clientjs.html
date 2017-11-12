@@ -1,0 +1,113 @@
+<script>
+/*
+ *
+ * =================================
+ * UTILITIES & CROSS PANEL FUNCTIONS
+ * =================================
+ *
+ */
+
+// used to show or hide / hide / show a specific panel
+// @param: panel - string. suffix for items to act on (eg if id = panel-help, choice = "help")
+function panelToggle (panel) {
+    panelId = "#panel-" + panel;
+    $(panelId).toggleClass("offscreen");
+}
+function hidePanel (panel) {
+    panelId = "#panel-" + panel;
+    $(panelId).addClass("offscreen");
+}
+function showPanel (panel) {
+    panelId = "#panel-" + panel;
+    $(panelId).removeClass("offscreen");
+}
+
+// manage the loading spinner
+function showLoadingSpinner () {
+    $('#loader').removeClass('hidden');
+}
+function hideLoadingSpinner () {
+    $('#loader').addClass('hidden');
+}
+
+
+
+
+
+
+/*
+ *
+ * ============
+ * LOGIN SCREEN
+ * ============
+ *
+ */
+// get user data from input fields and store in user data object
+// adds the 'api-key' text before the key to make creating the urls simpler
+function getAuthDetails () {
+    model.user.url = $("#input-url").val();
+    model.user.userName = $("#input-userName").val();
+    model.user.api_key = btoa("&api-key=" + encodeURIComponent($("#input-password").val()));
+}
+// fill in mock values for easy log in development, enable dev button
+function setAuthDetails () {
+    $('#input-url').val(model.user.url);
+    $('#input-userName').val(model.user.userName);
+    $('#input-password').val(model.user.api_key);
+}
+// handle the click of the login button
+function loginAttempt () {
+    getAuthDetails();
+    login();
+}
+// login function that starts the intial data creation
+function login() {    
+    showLoadingSpinner();
+    // call server side function to get projects
+    // also serves as authentication check, if the user credentials aren't correct it will throw a network error
+    google.script.run
+        .withSuccessHandler(populateProjects)
+        .withFailureHandler(errorNetwork)
+        .getProjects(model.user);
+}
+// kick off prepping and showing main panel
+// @param: projects - passed in projects data returned from the server following successful API call to Spira
+function populateProjects (projects) {
+    // take projects data from Spira API call, strip out unwanted fields, add to data model
+    let pairedDownProjectsData = projects.map(function(project) {
+        let result = {
+            id: project.ProjectId,
+            name: project.Name
+        };
+        return result;
+    });
+    
+    // now add paired down project array to data store
+    model.projects = pairedDownProjectsData;
+    
+    // get UI logic ready for main panel
+    showMainPanel();
+}
+
+
+
+
+/*
+ *
+ * ===========
+ * MAIN SCREEN
+ * ===========
+ *
+ */
+ 
+// manage the switching of the UI off the login screen on succesful login and retrieval of projects
+function showMainPanel () {
+    // displays the current logged in user name
+    $('#js--loggedInAs').html('Logged in as: ' + model.user.userName);
+    
+    setDropdown("select-project", model.projects, "Select a project");
+    setDropdown("select-artifact", params.artifacts, "Select an artifact");
+    showPanel("main");
+    hideLoadingSpinner();
+}
+</script>

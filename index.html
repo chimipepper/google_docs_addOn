@@ -4,61 +4,15 @@
 <head>
     <base target="_top">
     <link rel="stylesheet" href="https://ssl.gstatic.com/docs/script/css/add-ons1.css">
-    
-<!--create external css file-->    
-<style>
-/*
- * ==========
- * PAGE PARTS
- * ==========
- */
- 
- body {
-    background-color: white;
-    font-family: Arial;
-    height: 100vh;
-    overflow-x: hidden;
-    overflow-y: none;
-    width: 100vw;
-}
-.header {
-    align-items: center;
-    display: flex;
-    padding: 10px 5px;
-}
-.header-heading {
-    margin: 0 0 0 1rem;
-}
-.header-logo {
-    height: 40px;
-}
-.panel {
-    background-color: white;
-    height: calc(100vh - 150px); /* 150 leaves space around header and footer */
-    left: 0;
-    overflow-y: auto;
-    padding: 1rem;
-    position: absolute;
-    transition: left 0.2s;
-    width: 100vw
-}
-.panel.offscreen {
-    left: 100%;
-}
-.footer {
-    bottom: 0;
-    padding: 1rem;
-    position: fixed;
-}
-.footer-logo {
-    height: 25px;
-}
-</style>
-
-
-
-
+        <?!= include('styles'); ?>
 </head>
+
+
+
+
+
+
+
 <body>
 
   <header class="header">
@@ -148,6 +102,127 @@
             </button>
         </div><!--end of mt-md-->
     </div> <!--end of panel auth div--> 
+
+
+
+
+
+    <!--main screen-->
+    <div class="panel offscreen" id="panel-main">
+        <p 
+            class="secondary" 
+            id="js--loggedInAs"
+            >
+        </p>
+        
+        <div class="btn-group pb-lg">
+            <button 
+                id="btn-help-main"
+                onclick="panelToggle('help')"
+                title="View help screen"
+                type="button"
+                >
+                Help
+            </button>
+            <button 
+                onclick="logoutAttempt()"
+                title="Logout of addon (no data on sheet is affected)"
+                type="button"
+                >
+                Logout
+            </button>
+        </div> <!--end of btn-group class-->
+     
+        <ul class="form">
+          <li class="form-pair">
+            <label 
+                class="form-label" 
+                for="select-project"
+                >
+                Projects:
+            </label>
+            <select 
+                class="form-input"
+                id="select-project"
+                >
+                <!--aysnc populated -->
+            </select>
+          </li>
+          <li class="form-pair">
+            <label 
+                class="form-label" 
+                for="select-artifact"
+                >
+                Artifact:
+            </label>
+            <select 
+                class="form-input"
+                disabled="true"
+                id="select-artifact" 
+                >
+                <!--aysnc populated -->
+            </select>
+            <!--</label>-->
+        
+        
+        <div class="pt-md">
+            <button 
+                class="action"
+                disabled="true"
+                id="btn-template" 
+                onclick="createTemplateAttempt()"
+                title="Create template for chosen options on first sheet in file"
+                type="button"
+                >
+                Load
+            </button>
+            <button 
+                onclick="saveSheetAttempt()"
+                title="Create a copy of the current sheet in this spreadsheet"
+                type="button"
+                >
+                Copy
+            </button>
+            <button 
+                onclick="clearSheetAttempt()"
+                title="Manually wipe the current sheet of all data"
+                type="button"
+                >
+                Clear
+            </button>
+        </div>  <!--end of pt-md class-->
+        <div class="pt-lg">
+            <div style="display: none" id="template-data-box">
+                <p>
+                    The template is currently configured to: 
+                    <span id="template-project"></span>, <span id="template-artifact"></span>.
+                </p>
+            </div>
+            <button  
+                disabled="true"
+                id="btn-fromSpira"
+                onclick="getFromSpiraAttempt()"
+                type="button"
+                >
+                Get from SpiraTeam
+            </button>
+            <button
+                disabled="true"
+                id="btn-toSpira" 
+                onclick="sendToSpiraAttempt()"
+                type="button"
+                >
+                Send to SpiraTeam
+            </button>
+        </div><!--end of pt-lg class-->
+        
+    </div>
+    
+    
+    
+    
+    
+
 
 
 
@@ -252,12 +327,7 @@
                         <small>Select an artifact from the menu.</small>
                     </p>
                 </li>
-                <li>
-                    <p>
-                        <b>Load Template</b>
-                        <small>Click this button to generate the template for the project and artifact you’ve selected.</small>
-                    </p>
-                </li>
+              
                 <li>
                     <p>
                         <b>Save</b>
@@ -283,54 +353,6 @@
         
         
         <div id="help-section-fields" class="help-section hidden">
-            <h4>Custom Field Entries</h4>
-            <ul class="list">
-                <li>
-                    <p>
-                        <b>Text</b>
-                        <small>Enter any text. Include HTML tags for rich text.</small>
-                    </p>
-                </li>
-                <li>
-                    <p>
-                        <b>Decimal</b>
-                        <small>Enter any positive number.</small>
-                    </p>
-                </li>
-                <li>
-                    <p>
-                        <b>Integer</b>
-                        <small>Enter a non-decimal number.</small>
-                    </p>
-                </li>
-                <li>
-                    <p>
-                        <b>Date</b>
-                        <small>Enter the date in any standard format.</small>
-                    </p>
-                </li>
-                <li>
-                    <p>
-                        <b>List</b>
-                        <small>Select a value from the dropdown list.</small>
-                    </p>
-                </li>
-                <li>
-                    <p>
-                        <b>MultiList</b>
-                        <small>Select an item from the provided list. <em>This is not currently supported</em></small>
-                    </p>
-                </li>
-                <li>
-                    <p>
-                        <b>User</b>
-                        <small>Select a name from the list of users</small>
-                    </p>
-                </li>
-            </ul>
-            
-            <br>
-            
             <h4>Help For Specific Fields</h4>
             <ul class="list">
                 <li>
@@ -360,7 +382,7 @@ Item 1
                     </p>
                 </li>
             </ul>
-        </div>
+        </div><!--end of help-section hidden-->
     </div><!--end of help page -->
     
     
@@ -373,8 +395,29 @@ Item 1
     </footer>
     
     
+ <!--spinner-->
+    <div id='loader' class='loader-box hidden'>
+        <div class="loader"></div>
+    </div>
+    
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
  <!--Jquery-->
     <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha256-/SIrNqv8h6QGKDuNoLGA4iret+kyesCkHGzVUUV0shc=" crossorigin="anonymous"></script>    
+        <?!= include('clientjs'); ?>
+
+
 </body>
 </html>
 
