@@ -10,9 +10,6 @@
 
 
 
-
-
-
 <body>
 
   <header class="header">
@@ -131,9 +128,9 @@
                 >
                 Logout
             </button>
-        </div> <!--end of btn-group class-->
+        </div> <!--end of btn-group div-->
      
-        <ul class="form">
+        <ul class="form">      <!--where is end of ul??-->
           <li class="form-pair">
             <label 
                 class="form-label" 
@@ -162,6 +159,8 @@
                 >
                 <!--aysnc populated -->
             </select>
+            </li>
+            </ul>  <!--end of form ul-->
             <!--</label>-->
         
         
@@ -191,13 +190,14 @@
                 Clear
             </button>
         </div>  <!--end of pt-md class-->
+        
         <div class="pt-lg">
             <div style="display: none" id="template-data-box">
                 <p>
                     The template is currently configured to: 
                     <span id="template-project"></span>, <span id="template-artifact"></span>.
                 </p>
-            </div>
+            </div> <!--end of template-data-box-->
             <button  
                 disabled="true"
                 id="btn-fromSpira"
@@ -216,7 +216,7 @@
             </button>
         </div><!--end of pt-lg class-->
         
-    </div>
+    </div> <!--end of panel-main div-->
     
     
     
