@@ -49,6 +49,33 @@ function hideLoadingSpinner () {
     $('#loader').addClass('hidden');
 }
 
+// adds all options to a dropdown
+// @param: selectId - is the id of the dom select element
+// @param: array - the array of objects (with id, name, and optionally a disabled value, and hidden bool)
+// @param: firstMessage - an optional text field to go at the top of the array - the initial choice 
+function setDropdown (selectId, array, firstMessage) {
+    // first make a deep copy of the array to stop any funny business
+    var arrayCopy = JSON.parse(JSON.stringify(array)),
+        $element = $("#" + selectId);
+    // if passed in, add default "select" option to top of project array
+    if(firstMessage) arrayCopy.unshift({
+        id: 0, 
+        name: firstMessage
+    });
+    // clear the dropdown
+    $element.html('');
+    var options = arrayCopy.map(function(item) {
+        var disabledText = item.disabled ? " disabled='true'" : "",
+            option = "<option value=" + item.id + disabledText + ">" + item.name + "</option>"
+        return !item.hidden ? option : null;
+    }).join("");
+    
+    // add all optoins to the dropdown
+    $element.append(options);
+}
+
+
+
 
 
 
@@ -73,6 +100,7 @@ function setAuthDetails () {
     $('#input-password').val(user.api_key);
 }
 // handle the click of the login button
+//grabs authentication details and submits to server function for API call
 function loginAttempt () {
     getAuthDetails();
     login();
@@ -85,11 +113,12 @@ function login() {
     google.script.run
         .withSuccessHandler(populateProjects)
         .withFailureHandler(errorNetwork)
-        .getProjects(model.user);
+        .getProjects(user);
 }
 // kick off prepping and showing main panel
 // @param: projects - passed in projects data returned from the server following successful API call to Spira
 function populateProjects (projects) {
+console.log(projects);
     // take projects data from Spira API call, strip out unwanted fields, add to data model
     let pairedDownProjectsData = projects.map(function(project) {
         let result = {
@@ -99,9 +128,12 @@ function populateProjects (projects) {
         return result;
     });
     
-    // now add paired down project array to data store
-    model.projects = pairedDownProjectsData;
     
+    
+    
+//    // now add paired down project array to data store
+//    user.projects = pairedDownProjectsData;
+    console.log(projects);
     // get UI logic ready for main panel
     showMainPanel();
 }
@@ -125,25 +157,25 @@ function showMainPanel () {
     // displays the current logged in user name
     $('#js--loggedInAs').html('Logged in as: ' + user.userName);
     
-    setDropdown("select-project", model.projects, "Select a project");
+    setDropdown("select-project", user.projects, "Select a project");
     setDropdown("select-artifact", params.artifacts, "Select an artifact");
     showPanel("main");
     hideLoadingSpinner();
 }
-// run server side code to manage logout
-function logoutAttempt () {
-    //warn user that all data on the first sheet will be lost. Returns true or false
-    google.script.run
-        .withSuccessHandler(logout)
-        .warn('All data on the first sheet will be deleted. Continue?');
-}
-// @param: shouldLogout - a true or false value from google
-function logout (shouldLogout) {
-    if (shouldLogout) {
-        clearAddonData();
-        resetSidebar();
-    }
-}
+//// run server side code to manage logout
+//function logoutAttempt () {
+//    //warn user that all data on the first sheet will be lost. Returns true or false
+//    google.script.run
+//        .withSuccessHandler(logout)
+//        .warn('All data on the first sheet will be deleted. Continue?');
+//}
+//// @param: shouldLogout - a true or false value from google
+//function logout (shouldLogout) {
+//    if (shouldLogout) {
+//        clearAddonData();
+//        resetSidebar();
+//    }
+//}
 
 
   

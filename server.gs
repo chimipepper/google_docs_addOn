@@ -78,19 +78,18 @@ function include(filename) {
 // General fetch function, using Google's built in fetch api
 // @param: currentUser - user object storing login data from client
 // @param: fetcherUrl - url string passed in to connect with Spira
-function fetcher(currentUser, fetcherURL) {
+function fetcher(user, fetcherURL) {
     //google base 64 encoded string utils
-    var decoded = Utilities.base64Decode(currentUser.api_key);
+    var decoded = Utilities.base64Decode(user.api_key);
     var APIKEY = Utilities.newBlob(decoded).getDataAsString();
 
     //build URL from args
-    var fullUrl = currentUser.url + fetcherURL + "username=" + currentUser.userName + APIKEY;
+    var fullUrl = user.url + fetcherURL + "username=" + user.userName + APIKEY;
     //set MIME type
     var params = { 'content-type': 'application/json' };
 
     //call Google fetch function
     var response = UrlFetchApp.fetch(fullUrl, params);
-
     //returns parsed JSON
     //unparsed response contains error codes if needed
     return JSON.parse(response);
@@ -101,9 +100,9 @@ function fetcher(currentUser, fetcherURL) {
 // Gets projects accessible by current logged in user
 // This function is called on initial log in and therefore also acts as user validation
 // @param: currentUser - object with details about the current user
-function getProjects(currentUser) {
+function getProjects(user) {
     var fetcherURL = API_BASE_NO_SLASH + '?';
-    return fetcher(currentUser, fetcherURL);
+    return fetcher(user, fetcherURL);
 }
 
 
@@ -111,7 +110,7 @@ function getProjects(currentUser) {
 // Gets components for selected project.
 // @param: currentUser - object with details about the current user
 // @param: projectId - int id for current project
-function getComponents(currentUser, projectId) {
+function getComponents(user, projectId) {
     var fetcherURL = API_BASE + projectId + '/components?active_only=true&include_deleted=false&';
     return fetcher(currentUser, fetcherURL);
 }
@@ -122,30 +121,30 @@ function getComponents(currentUser, projectId) {
 // @param: currentUser - object with details about the current user
 // @param: projectId - int id for current project
 // @param: artifactName - string name of the current artifact
-function getCustoms(currentUser, projectId, artifactName) {
+function getCustoms(user, projectId, artifactName) {
     var fetcherURL = API_BASE + projectId + '/custom-properties/' + artifactName + '?';
     return fetcher(currentUser, fetcherURL);
 }
 
 
 
-// Gets releases for selected project
-// @param: currentUser - object with details about the current user
-// @param: projectId - int id for current project
-function getReleases(currentUser, projectId) {
-    var fetcherURL = API_BASE + projectId + '/releases?';
-    return fetcher(currentUser, fetcherURL);
-}
-
-
-
-// Gets users for selected project
-// @param: currentUser - object with details about the current user
-// @param: projectId - int id for current project
-function getUsers(currentUser, projectId) {
-    var fetcherURL = API_BASE + projectId + '/users?';
-    return fetcher(currentUser, fetcherURL);
-}
+//// Gets releases for selected project
+//// @param: currentUser - object with details about the current user
+//// @param: projectId - int id for current project
+//function getReleases(currentUser, projectId) {
+//    var fetcherURL = API_BASE + projectId + '/releases?';
+//    return fetcher(currentUser, fetcherURL);
+//}
+//
+//
+//
+//// Gets users for selected project
+//// @param: currentUser - object with details about the current user
+//// @param: projectId - int id for current project
+//function getUsers(currentUser, projectId) {
+//    var fetcherURL = API_BASE + projectId + '/users?';
+//    return fetcher(currentUser, fetcherURL);
+//}
 
 
 
