@@ -77,18 +77,11 @@
         <div class="mt-md">
             <button 
                 class="action" 
-                onclick="loginAttempt()"
+               onclick="loginAttempt()"
                 title="Login using details filled out above"
                 type="button"
                 >
                 Log In
-            </button>
-            <button 
-                onclick="clearAuthForm()"
-                title="Clear the login form"
-                type="button"
-                >
-                Clear
             </button>
             <button 
                 onclick="panelToggle('help')"
@@ -96,6 +89,15 @@
                 type="button"
                 >
                 Help
+            </button>
+             <!-- Dev mock login data button. For developement only -->  
+            <button
+                id="btn-dev"
+                onclick="setAuthDetails()"
+                title="Click to load login screen with dev details"
+                type="button"
+                >
+                Dev
             </button>
         </div><!--end of mt-md-->
     </div> <!--end of panel auth div--> 
@@ -400,11 +402,6 @@ Item 1
         <div class="loader"></div>
     </div>
     
- 
- 
- 
- 
- 
  
  
  

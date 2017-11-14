@@ -1,3 +1,21 @@
+// globals
+var API_BASE = '/services/v5_0/RestService.svc/projects/',
+    API_BASE_NO_SLASH = '/services/v5_0/RestService.svc/projects',
+    ART_ENUMS = {
+        requirements: 1,
+        testCases: 2,
+        testSteps: 7
+    },
+    //enums are specified on inflectra's server to recognize which number belongs to which artifact
+    INITIAL_HIERARCHY_OUTDENT = -20,
+    STATUS_ENUM = {
+        allSuccess: 1,
+        allError: 2,
+        someError: 3
+    },
+    INLINE_STYLING = "style='font-family: sans-serif'";
+
+
 /*
  * ======================
  * INITIAL LOAD FUNCTIONS
@@ -39,6 +57,10 @@ function include(filename) {
   return HtmlService.createHtmlOutputFromFile(filename)
       .getContent();
 }
+
+
+
+
 
 
 
@@ -124,5 +146,10 @@ function getUsers(currentUser, projectId) {
     var fetcherURL = API_BASE + projectId + '/users?';
     return fetcher(currentUser, fetcherURL);
 }
+
+
+
+
+
 
 

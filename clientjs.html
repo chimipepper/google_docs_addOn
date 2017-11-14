@@ -1,4 +1,8 @@
 <script>
+//global 
+//user object to save input data- model not needed 
+var user= {};
+
 /*
  *
  * =================================
@@ -6,7 +10,23 @@
  * =================================
  *
  */
-
+ //DEV mode- login type isn't required
+let devMode = true;
+// on init make sure to run any required startup functions
+(function () {
+    // for dev mode only - comment out or set to false to disable any UI dev features
+    setDevStuff(devMode);
+})();
+// if devmode enabled, set the required fields and show the dev button
+function setDevStuff (devMode) {
+    if (devMode) {
+//        $("#btn-dev").removeClass("hidden");
+        
+        user.url = "https://demo.spiraservice.net/jlee";
+        user.userName = "administrator";
+        user.api_key = "{82B456C5-101A-4385-A647-C2DC639433BF}";
+    }
+}
 // used to show or hide / hide / show a specific panel
 // @param: panel - string. suffix for items to act on (eg if id = panel-help, choice = "help")
 function panelToggle (panel) {
@@ -21,7 +41,6 @@ function showPanel (panel) {
     panelId = "#panel-" + panel;
     $(panelId).removeClass("offscreen");
 }
-
 // manage the loading spinner
 function showLoadingSpinner () {
     $('#loader').removeClass('hidden');
@@ -29,8 +48,6 @@ function showLoadingSpinner () {
 function hideLoadingSpinner () {
     $('#loader').addClass('hidden');
 }
-
-
 
 
 
@@ -45,15 +62,15 @@ function hideLoadingSpinner () {
 // get user data from input fields and store in user data object
 // adds the 'api-key' text before the key to make creating the urls simpler
 function getAuthDetails () {
-    model.user.url = $("#input-url").val();
-    model.user.userName = $("#input-userName").val();
-    model.user.api_key = btoa("&api-key=" + encodeURIComponent($("#input-password").val()));
+    user.url = $("#input-url").val();
+    user.userName = $("#input-userName").val();
+    user.api_key = btoa("&api-key=" + encodeURIComponent($("#input-password").val()));
 }
 // fill in mock values for easy log in development, enable dev button
 function setAuthDetails () {
-    $('#input-url').val(model.user.url);
-    $('#input-userName').val(model.user.userName);
-    $('#input-password').val(model.user.api_key);
+    $('#input-url').val(user.url);
+    $('#input-userName').val(user.userName);
+    $('#input-password').val(user.api_key);
 }
 // handle the click of the login button
 function loginAttempt () {
@@ -92,6 +109,9 @@ function populateProjects (projects) {
 
 
 
+
+
+
 /*
  *
  * ===========
@@ -103,11 +123,80 @@ function populateProjects (projects) {
 // manage the switching of the UI off the login screen on succesful login and retrieval of projects
 function showMainPanel () {
     // displays the current logged in user name
-    $('#js--loggedInAs').html('Logged in as: ' + model.user.userName);
+    $('#js--loggedInAs').html('Logged in as: ' + user.userName);
     
     setDropdown("select-project", model.projects, "Select a project");
     setDropdown("select-artifact", params.artifacts, "Select an artifact");
     showPanel("main");
     hideLoadingSpinner();
+}
+// run server side code to manage logout
+function logoutAttempt () {
+    //warn user that all data on the first sheet will be lost. Returns true or false
+    google.script.run
+        .withSuccessHandler(logout)
+        .warn('All data on the first sheet will be deleted. Continue?');
+}
+// @param: shouldLogout - a true or false value from google
+function logout (shouldLogout) {
+    if (shouldLogout) {
+        clearAddonData();
+        resetSidebar();
+    }
+}
+
+
+  
+
+
+
+
+
+/*
+ *
+ * ===========
+ * HELP SCREEN
+ * ===========
+ *
+ */
+// manage showing the correct help section to the user
+// @param: choice - string. suffix for items to select (eg if id = help-section-fields, choice = "fields")
+function showChosenHelpSection (choice) {
+    // hide all sections and then only show the one the user wants
+    $(".help-section").addClass("hidden");
+    $("#help-section-" + choice).removeClass("hidden");
+    
+    // set all buttons back to normal, then highlight one just clicked
+    $(".btn-help").removeClass("create");
+    $("#btn-help-" + choice).addClass("create");
+}
+
+
+
+
+
+/*
+ * 
+ * ==============
+ * ERROR HANDLING
+ * ==============
+ *
+ * These call a popup using google server side code
+ * most args are the HTTPResponse objects from the `withFailureHandler` promise
+ *
+ */
+function errorPopUp(err, type) {
+    google.script.run.error(type);
+    hideLoadingSpinner();
+    console.log(err);
+}
+function errorNetwork(err) {
+    errorPopUp(err);
+}
+function errorImpExp(err) {
+    errorPopUp(err, 'impExp');
+}
+function errorUnknown(err) {
+    errorPopUp(err, 'unknown');
 }
 </script>
