@@ -147,17 +147,25 @@ function getCustoms(user, projectId, artifactName) {
 
 
 function getSelectedText(info) {
-  var selection = DocumentApp.getActiveDocument().getSelection();
+  var selection = DocumentApp.getActiveDocument().getBody();
          Logger.log(selection);
-  var selected =selection.getRangeElements()[0].getElement().editAsText().getText();
-       //for loop to go through all the elements 
-       Logger.log(selected);
-//   DocumentApp.getUi().alert(selection.getRangeElements()[0].getElement().editAsText().getText()); 
-  var selectedInformation={
-    'name':selected,
-    'type': "default"
-  };
-  return selectedInformation;
+  //getparagraphs does not save all text as an array 
+  var selected =selection.getParagraphs().editAsText().getText();
+////for loop goes through paragraphs and saves each separately as an object   
+//  for (var i = 0; i < selected.length; i++) {
+//    if (selected[i]=== '') {
+//      
+//    }
+//}
+//       //for loop to go through all the elements 
+//       Logger.log(selected);
+////   DocumentApp.getUi().alert(selection.getRangeElements()[0].getElement().editAsText().getText()); 
+//  var selectedInformation={
+//    'name':selected,
+//    'type': "default"
+//  };
+  return selected;
+//    return selectedInformation;
 }
 
 
