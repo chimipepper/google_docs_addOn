@@ -118,7 +118,6 @@ function login() {
 // kick off prepping and showing main panel
 // @param: projects - passed in projects data returned from the server following successful API call to Spira
 function populateProjects (projects) {
-console.log(projects);
     // take projects data from Spira API call, strip out unwanted fields, add to data model
     let pairedDownProjectsData = projects.map(function(project) {
         let result = {
@@ -132,13 +131,10 @@ console.log(projects);
     
     
 //    // now add paired down project array to data store
-//    user.projects = pairedDownProjectsData;
-    console.log(projects);
+    user.projects = pairedDownProjectsData;
     // get UI logic ready for main panel
     showMainPanel();
 }
-
-
 
 
 
@@ -156,9 +152,8 @@ console.log(projects);
 function showMainPanel () {
     // displays the current logged in user name
     $('#js--loggedInAs').html('Logged in as: ' + user.userName);
-    
     setDropdown("select-project", user.projects, "Select a project");
-    setDropdown("select-artifact", params.artifacts, "Select an artifact");
+//    setDropdown("select-artifact", params.artifacts, "Select an artifact");
     showPanel("main");
     hideLoadingSpinner();
 }
@@ -176,9 +171,6 @@ function showMainPanel () {
 //        resetSidebar();
 //    }
 //}
-
-
-  
 
 
 
@@ -230,5 +222,13 @@ function errorImpExp(err) {
 }
 function errorUnknown(err) {
     errorPopUp(err, 'unknown');
+}
+
+
+
+
+function getSelectionText() {
+    var text=window.getSelection().toString();
+    alert(text);
 }
 </script>
