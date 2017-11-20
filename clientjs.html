@@ -157,6 +157,21 @@ function showMainPanel () {
     showPanel("main");
     hideLoadingSpinner();
 }
+
+//send selected information to Spira requirements list in the form of an array 
+function sendToSpiraAttempt(info){
+       //grab selected styled text 
+       //put text into an array
+       //send array to inflectra- for now just console log 
+       //documentapp can't be defined in clientside
+  google.script.run
+             .withSuccessHandler(selectedInfo)
+             .getSelectedText(info);
+};
+
+function selectedInfo (info){
+        console.log(info);
+}
 //// run server side code to manage logout
 //function logoutAttempt () {
 //    //warn user that all data on the first sheet will be lost. Returns true or false
@@ -225,10 +240,4 @@ function errorUnknown(err) {
 }
 
 
-
-
-function getSelectionText() {
-    var text=window.getSelection().toString();
-    alert(text);
-}
 </script>

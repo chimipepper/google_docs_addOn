@@ -64,7 +64,6 @@ function include(filename) {
 
 
 
-
 /*
  *
  * ====================
@@ -103,8 +102,6 @@ function fetcher(user, fetcherURL) {
 function getProjects(user) {
     var fetcherURL = API_BASE_NO_SLASH + '?';
     return fetcher(user, fetcherURL);
-  
-  
 }
 
 
@@ -130,25 +127,38 @@ function getCustoms(user, projectId, artifactName) {
 
 
 
-//// Gets releases for selected project
-//// @param: currentUser - object with details about the current user
-//// @param: projectId - int id for current project
-//function getReleases(currentUser, projectId) {
-//    var fetcherURL = API_BASE + projectId + '/releases?';
-//    return fetcher(currentUser, fetcherURL);
-//}
-//
-//
-//
-//// Gets users for selected project
-//// @param: currentUser - object with details about the current user
-//// @param: projectId - int id for current project
-//function getUsers(currentUser, projectId) {
-//    var fetcherURL = API_BASE + projectId + '/users?';
-//    return fetcher(currentUser, fetcherURL);
+
+
+
+//original selection function
+//function getSelectedText(info) {
+//  var selection = DocumentApp.getActiveDocument().getSelection();
+//         Logger.log(selection);
+//  var selected =selection.getRangeElements()[0].getElement().editAsText().getText();
+//       //for loop to go through all the elements 
+//       Logger.log(selected);
+////   DocumentApp.getUi().alert(selection.getRangeElements()[0].getElement().editAsText().getText()); 
+//  var selectedInformation={
+//    'name':selected,
+//    'type': "default"
+//  };
+//  return selectedInformation;
 //}
 
 
+function getSelectedText(info) {
+  var selection = DocumentApp.getActiveDocument().getSelection();
+         Logger.log(selection);
+  var selected =selection.getRangeElements()[0].getElement().editAsText().getText();
+       //for loop to go through all the elements 
+       Logger.log(selected);
+//   DocumentApp.getUi().alert(selection.getRangeElements()[0].getElement().editAsText().getText()); 
+  var selectedInformation={
+    'name':selected,
+    'type': "default"
+  };
+  return selectedInformation;
+}
 
 
 
@@ -182,7 +192,3 @@ function okWarn(dialog) {
     var ui = DocumentApp.getUi();
     var response = ui.alert(dialog, ui.ButtonSet.OK);
 }
-
-
-
-  

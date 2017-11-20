@@ -14,7 +14,7 @@
 
   <header class="header">
         <img src="https://files.inflectra.com/google/sheets/spira_icon.png" class="header-logo">
-        <h3 class="header-heading">SpiraTeam Google Sheets Integration</h3>
+        <h3 class="header-heading">SpiraTeam Google Docs Integration</h3>
     </header>
     
     
@@ -125,7 +125,7 @@
             </button>
             <button 
                 onclick="logoutAttempt()"
-                title="Logout of addon (no data on sheet is affected)"
+                title="Logout of addon"
                 type="button"
                 >
                 Logout
@@ -166,24 +166,7 @@
             <!--</label>-->
         
         
-        <div class="pt-md">
-            <button 
-                class="action"
-                disabled="true"
-                id="btn-template" 
-                onclick="createTemplateAttempt()"
-                title="Create template for chosen options on first sheet in file"
-                type="button"
-                >
-                Load
-            </button>
-            <button 
-                onclick="saveSheetAttempt()"
-                title="Create a copy of the current sheet in this spreadsheet"
-                type="button"
-                >
-                Copy
-            </button>
+      <!--  <div class="pt-md">
             <button 
                 onclick="clearSheetAttempt()"
                 title="Manually wipe the current sheet of all data"
@@ -200,14 +183,6 @@
                     <span id="template-project"></span>, <span id="template-artifact"></span>.
                 </p>
             </div> <!--end of template-data-box-->
-            <button  
-                disabled="true"
-                id="btn-fromSpira"
-                onclick="getFromSpiraAttempt()"
-                type="button"
-                >
-                Get from SpiraTeam
-            </button>
             <button
                 id="btn-toSpira" 
                 onclick="sendToSpiraAttempt()"
@@ -413,7 +388,7 @@ Item 1
     <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha256-/SIrNqv8h6QGKDuNoLGA4iret+kyesCkHGzVUUV0shc=" crossorigin="anonymous"></script>    
         <?!= include('clientjs'); ?>
    <script>
-      google.script.run.test();
+      
     </script>
 
 </body>
