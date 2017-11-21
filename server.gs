@@ -127,16 +127,40 @@ function getCustoms(user, projectId, artifactName) {
 
 
 
+/*
+ *
+ * ====================
+ * SELECTION FUNCTIONS
+ * ====================
+ *
+ * functions used to retrieve highlighted text from document and store each paragraph heading as an object
+ *
+ */
 
 
 
-//original selection function
+
+//highlight all text 
+//save as an array
+//split into different objects 
+//split depending on paragraph heading
+//for loop with if statement-if a specific style, send to spirateam
+
+
+
+
+
+
+
+
+////original selection function
 //function getSelectedText(info) {
 //  var selection = DocumentApp.getActiveDocument().getSelection();
 //         Logger.log(selection);
 //  var selected =selection.getRangeElements()[0].getElement().editAsText().getText();
 //       //for loop to go through all the elements 
 //       Logger.log(selected);
+//  var requirementName= new Object();
 ////   DocumentApp.getUi().alert(selection.getRangeElements()[0].getElement().editAsText().getText()); 
 //  var selectedInformation={
 //    'name':selected,
@@ -146,27 +170,35 @@ function getCustoms(user, projectId, artifactName) {
 //}
 
 
+//creates an array of the different sentences but always only returns the last sentences
+//need to narrow down paragraph headings
 function getSelectedText(info) {
   var selection = DocumentApp.getActiveDocument().getBody();
          Logger.log(selection);
-  //getparagraphs does not save all text as an array 
-  var selected =selection.getParagraphs().editAsText().getText();
-////for loop goes through paragraphs and saves each separately as an object   
-//  for (var i = 0; i < selected.length; i++) {
-//    if (selected[i]=== '') {
-//      
-//    }
-//}
-//       //for loop to go through all the elements 
-//       Logger.log(selected);
-////   DocumentApp.getUi().alert(selection.getRangeElements()[0].getElement().editAsText().getText()); 
-//  var selectedInformation={
-//    'name':selected,
-//    'type': "default"
-//  };
-  return selected;
-//    return selectedInformation;
+  //saves document content as text
+  var selected =selection.editAsText().getText();
+//creates an array of sentences
+  var splitSelected= selected.split('\n');
+  
+  var requirementName= new Object();
+  var requirementArray=[];
+//for loop goes through splitSelected array and saves each separately as an object   
+  for (var i = 0; i < splitSelected.length; i++) {
+            requirementName.name= splitSelected[i];
+            requirementName.type="default";
+    }
+//they are separate objects but how do i save them to an array
+  return splitSelected;
 }
+
+
+
+
+
+
+
+
+
 
 
 
