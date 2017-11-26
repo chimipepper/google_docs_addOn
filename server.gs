@@ -137,58 +137,25 @@ function getCustoms(user, projectId, artifactName) {
  *
  */
 
-
-
-
-//highlight all text 
-//save as an array
-//split into different objects 
-//split depending on paragraph heading
-//for loop with if statement-if a specific style, send to spirateam
-
-
-
-
-
-
-
-
-////original selection function
-//function getSelectedText(info) {
-//  var selection = DocumentApp.getActiveDocument().getSelection();
-//         Logger.log(selection);
-//  var selected =selection.getRangeElements()[0].getElement().editAsText().getText();
-//       //for loop to go through all the elements 
-//       Logger.log(selected);
-//  var requirementName= new Object();
-////   DocumentApp.getUi().alert(selection.getRangeElements()[0].getElement().editAsText().getText()); 
-//  var selectedInformation={
-//    'name':selected,
-//    'type': "default"
-//  };
-//  return selectedInformation;
-//}
-
-
 //creates an array of the different sentences but always only returns the last sentences
 //need to narrow down paragraph headings
 function getSelectedText(info) {
   var selection = DocumentApp.getActiveDocument().getBody();
-         Logger.log(selection);
-  //saves document content as text
-  var selected =selection.editAsText().getText();
-//creates an array of sentences
-  var splitSelected= selected.split('\n');
-  
-  var requirementName= new Object();
-  var requirementArray=[];
-//for loop goes through splitSelected array and saves each separately as an object   
-  for (var i = 0; i < splitSelected.length; i++) {
-            requirementName.name= splitSelected[i];
-            requirementName.type="default";
-    }
-//they are separate objects but how do i save them to an array
-  return splitSelected;
+  //textBody returns all the information 
+  var textBody= selection.getText();
+  var selected=selection.getChild(0).getHeading();
+         Logger.log(textBody);
+         Logger.log(selected);
+
+for (i = 0; i < textBody.length; i++) { 
+  if(selected=="Heading 1"){
+        Logger.log('this is a Heading1');  
+  }
+  else {
+        Logger.log('this is not a Heading1');  
+  }
+}
+  return selection;
 }
 
 
