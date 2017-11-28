@@ -137,34 +137,77 @@ function getCustoms(user, projectId, artifactName) {
  *
  */
 
-//creates an array of the different sentences but always only returns the last sentences
-//need to narrow down paragraph headings
+//save all document 
+//loop through document to search for heading styles
+//if statement to filter through the different styles and log Heading 1 and normal 
+//if statement to filter through enter key first --> turns into an array of objects
+
+
 function getSelectedText(info) {
-  var selection = DocumentApp.getActiveDocument().getBody();
-  //textBody returns all the information 
-  var textBody= selection.getText();
-  var selected=selection.getChild(0).getHeading();
-         Logger.log(textBody);
-         Logger.log(selected);
-
-for (i = 0; i < textBody.length; i++) { 
-  if(selected=="Heading 1"){
-        Logger.log('this is a Heading1');  
-  }
-  else {
-        Logger.log('this is not a Heading1');  
-  }
+//returns documentselected
+  var getBody = DocumentApp.getActiveDocument().getBody();
+     Logger.log(getBody);
+  var getNum=getBody.getNumChildren();
+      Logger.log(getNum);
+//returns the logs of all the elements
+  for (i = 0; i < getNum; i++) {
+      var getChild= getBody.getChild(i).editAsText().getText();
+      Logger.log(getChild);
+ }
+  
+ 
+//object is being created, just not the semicolon?  
+  var requirementName= {};
+  var requirementArray= [];
+  for (var i = 0; i < getNum; i++) {
+         var getHeading= getBody.getChild(i).getHeading();
+//         Logger.log(getHeading);
+    if(getHeading=="Heading 1"|| getHeading=="Heading 2") {
+      requirementName.name= getBody.getChild(i).editAsText().getText();
+    } else {
+      requirementName.description= getBody.getChild(i).editAsText().getText();
+    }
+    Logger.log(requirementName);
+     } 
+  
+//  //only grabs the last object
+//  requirementArray.push(requirementName);
+//           Logger.log(requirementArray);
+  
+ 
+//returns info to client side
+  return getBody;
 }
-  return selection;
-}
 
 
 
 
+/*
+ *
+ * ==============
+ * POST REQUIREMENTS
+ * ==============
+ *
+ */
+//names
+//project selected
+//base api url
+//params-content type-json
+//params-method-post
+//what is everything returning?
 
-
-
-
+//function () {
+//encryption
+// var decoded = Utilities.base64Decode(currentUser.api_key);
+//    var APIKEY = Utilities.newBlob(decoded).getDataAsString();
+//full URL =current user.url + postURL +"username="+currentUser.username+ APIKEY
+//POST params
+//var params= {'method': 'post'
+//             'contentType':'application/json'
+//            };
+//var response= UrlFetchApp.fetch(fullURL,params)
+//} 
+//return response;
 
 
 
