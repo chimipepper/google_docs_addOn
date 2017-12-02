@@ -12,11 +12,13 @@ var user= {};
  */
  //DEV mode- login type isn't required
 let devMode = true;
+
 // on init make sure to run any required startup functions
 (function () {
     // for dev mode only - comment out or set to false to disable any UI dev features
     setDevStuff(devMode);
 })();
+
 // if devmode enabled, set the required fields and show the dev button
 function setDevStuff (devMode) {
     if (devMode) {
@@ -27,6 +29,7 @@ function setDevStuff (devMode) {
         user.api_key = "{82B456C5-101A-4385-A647-C2DC639433BF}";
     }
 }
+
 // used to show or hide / hide / show a specific panel
 // @param: panel - string. suffix for items to act on (eg if id = panel-help, choice = "help")
 function panelToggle (panel) {
@@ -126,11 +129,8 @@ function populateProjects (projects) {
         };
         return result;
     });
-    
-    
-    
-    
-//    // now add paired down project array to data store
+ 
+    // now add paired down project array to data store
     user.projects = pairedDownProjectsData;
     // get UI logic ready for main panel
     showMainPanel();
@@ -159,20 +159,21 @@ function showMainPanel () {
 }
 
 //send selected information to Spira requirements list in the form of an array 
-function sendToSpiraAttempt(info){
+function sendToSpiraAttempt(){
        //grab selected styled text 
        //put text into an array
        //send array to inflectra- for now just console log 
        //documentapp can't be defined in clientside
   google.script.run
              .withSuccessHandler(selectedInfo)
-             .getSelectedText(info);
+             .getArray();
 };
-
-
+     
+     
+     
 function selectedInfo (info){
         console.log(info);
-}
+};
 
 
 

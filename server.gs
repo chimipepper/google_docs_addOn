@@ -106,24 +106,7 @@ function getProjects(user) {
 
 
 
-// Gets components for selected project.
-// @param: currentUser - object with details about the current user
-// @param: projectId - int id for current project
-function getComponents(user, projectId) {
-    var fetcherURL = API_BASE + projectId + '/components?active_only=true&include_deleted=false&';
-    return fetcher(currentUser, fetcherURL);
-}
 
-
-
-// Gets custom fields for selected project and artifact
-// @param: currentUser - object with details about the current user
-// @param: projectId - int id for current project
-// @param: artifactName - string name of the current artifact
-function getCustoms(user, projectId, artifactName) {
-    var fetcherURL = API_BASE + projectId + '/custom-properties/' + artifactName + '?';
-    return fetcher(currentUser, fetcherURL);
-}
 
 
 
@@ -143,40 +126,69 @@ function getCustoms(user, projectId, artifactName) {
 //if statement to filter through enter key first --> turns into an array of objects
 
 
-function getSelectedText(info) {
-//returns documentselected
-  var getBody = DocumentApp.getActiveDocument().getBody();
-     Logger.log(getBody);
-  var getNum=getBody.getNumChildren();
-      Logger.log(getNum);
-//returns the logs of all the elements
-  for (i = 0; i < getNum; i++) {
-      var getChild= getBody.getChild(i).editAsText().getText();
-      Logger.log(getChild);
- }
+function getArray() {
+  //returns documentselected
+  var docBody = DocumentApp.getActiveDocument().getBody();
+     Logger.log(docBody);
+  var bodyNum=docBody.getNumChildren();
+      Logger.log(bodyNum);
+//returns the logs of all the elements individually
+  for (var i = 0; i < bodyNum; i++) {
+      var numChild= docBody.getChild(i).editAsText().getText();
+      Logger.log(numChild);
+  }
   
  
-//object is being created, just not the semicolon?  
-  var requirementName= {};
-  var requirementArray= [];
-  for (var i = 0; i < getNum; i++) {
-         var getHeading= getBody.getChild(i).getHeading();
-//         Logger.log(getHeading);
-    if(getHeading=="Heading 1"|| getHeading=="Heading 2") {
-      requirementName.name= getBody.getChild(i).editAsText().getText();
-    } else {
-      requirementName.description= getBody.getChild(i).editAsText().getText();
-    }
-    Logger.log(requirementName);
-     } 
   
-//  //only grabs the last object
-//  requirementArray.push(requirementName);
-//           Logger.log(requirementArray);
+var idName = DocumentApp.getActiveDocument().getId();
+  Logger.log(idName);
+var urlName = "https://docs.google.com/feeds/download/documents/export/Export?id=" + idName + "&exportFormat=html";
+  Logger.log(urlName);
+var htmlName = UrlFetchApp.fetch(urlName).getContentText();
+  Logger.log(htmlName);
+
+  
+  
+  
+  
+  
+//for (var i = 0; i < bodyNum; i++) {
+//  //add all these separate objects into an array
+//  var requirementArray=[];
+//  var paragraphStyle= docBody.getChild(i).getHeading();
+//  if (paragraphStyle=="Heading 1") {
+//    //create a new object with the element as the name (in plain text)
+//  }
+//  else {
+//    //it's normal text and needs to be added to the parent object with .getParentElement() (in the html form)
+//  }
+//  
+//  if (paragraphStyle=="Heading 2") {
+//      //this is a sub requirement- look at inflectra api about these and see how to format it
+//  }
+//   
+//  }
+  
+////sending to client side to create objects  
+////object is being created, just not the semicolon?  
+//  var requirementName= new Object();
+//  var requirementArray= new Array();
+//  for (var i = 0; i < bodyNum; i++) {
+//         var paragraphStyle= docBody.getChild(i).getHeading();
+// //https://www.codecademy.com/en/forum_questions/50c207bd55df51ff27004775      
+////append to array
+//    if(paragraphStyle=="Heading 1"|| paragraphStyle=="Heading 2") {
+//      requirementName.name= docBody.getChild(i).editAsText().getText();
+//    } else {
+//      requirementName.description= docBody.getChild(i).editAsText().getText();
+//    }
+//    Logger.log(requirementName);
+//  } 
+//can see object through console.log  
   
  
 //returns info to client side
-  return getBody;
+  return htmlName;
 }
 
 
@@ -189,25 +201,7 @@ function getSelectedText(info) {
  * ==============
  *
  */
-//names
-//project selected
-//base api url
-//params-content type-json
-//params-method-post
-//what is everything returning?
 
-//function () {
-//encryption
-// var decoded = Utilities.base64Decode(currentUser.api_key);
-//    var APIKEY = Utilities.newBlob(decoded).getDataAsString();
-//full URL =current user.url + postURL +"username="+currentUser.username+ APIKEY
-//POST params
-//var params= {'method': 'post'
-//             'contentType':'application/json'
-//            };
-//var response= UrlFetchApp.fetch(fullURL,params)
-//} 
-//return response;
 
 
 
