@@ -139,19 +139,35 @@ function getArray() {
   }
   
  
-  
+//id of google doc page   
 var idName = DocumentApp.getActiveDocument().getId();
   Logger.log(idName);
-var urlName = "https://docs.google.com/feeds/download/documents/export/Export?id=" + idName + "&exportFormat=html";
+   var forDriveScope = DriveApp.getStorageUsed();
+  Logger.log(forDriveScope)
+//google export url to get google doc text (in html format) of the specific google doc id 
+var urlName = "https://docs.google.com/feeds/download/documents/export/Export?id=" + idName + "&exportFormat=html&format=html";
   Logger.log(urlName);
-var htmlName = UrlFetchApp.fetch(urlName).getContentText();
-  Logger.log(htmlName);
-
+ var param = {
+    method: "get",
+   headers: {
+        "Authorization": "Bearer " + ScriptApp.getOAuthToken(),
+    },
+    muteHttpExceptions:true,
+  };
+//api request- returns html in a string 
+var html = UrlFetchApp.fetch(urlName, param).getContentText();
+  Logger.log(html);
   
-  
-  
-  
-  
+  // nuke the whole head section, including the stylesheet and meta tag
+    html = html.replace(/<head>.*<\/head>/, '');
+    // remove almost all html attributes
+    html = html.replace(/ (id|class|style|start|colspan|rowspan)="[^"]*"/g, '');
+    // remove all of the spans, as well as the outer html and body
+    html = html.replace(/<(span|\/span|body|\/body|html|\/html)>/g, '');
+    // clearly the superior way of denoting line breaks
+    html = html.replace(/<br>/g, '<br />');
+   Logger.log(html);
+ 
 //for (var i = 0; i < bodyNum; i++) {
 //  //add all these separate objects into an array
 //  var requirementArray=[];
@@ -188,7 +204,7 @@ var htmlName = UrlFetchApp.fetch(urlName).getContentText();
   
  
 //returns info to client side
-  return htmlName;
+  return html;
 }
 
 
