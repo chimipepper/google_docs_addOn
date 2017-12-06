@@ -154,11 +154,12 @@ var urlName = "https://docs.google.com/feeds/download/documents/export/Export?id
     },
     muteHttpExceptions:true,
   };
+  
 //api request- returns html in a string 
 var html = UrlFetchApp.fetch(urlName, param).getContentText();
   Logger.log(html);
   
-  // nuke the whole head section, including the stylesheet and meta tag
+  // removes the whole head section, including the stylesheet and meta tag
     html = html.replace(/<head>.*<\/head>/, '');
     // remove almost all html attributes
     html = html.replace(/ (id|class|style|start|colspan|rowspan)="[^"]*"/g, '');
@@ -166,8 +167,87 @@ var html = UrlFetchApp.fetch(urlName, param).getContentText();
     html = html.replace(/<(span|\/span|body|\/body|html|\/html)>/g, '');
     // clearly the superior way of denoting line breaks
     html = html.replace(/<br>/g, '<br />');
-   Logger.log(html);
+   Logger.log(html);  
+  
+  
+//html is one string
+ var obj= html.match(/<h(.)>.*?<\/h\1>/g);
+//grabs EVERYTHING in between the first and last p tag  
+//  var obj2= html.match(/<p>.*<\/p>/g);
+// var obj3=html.match();
+  Logger.log(obj);
+//   Logger.log(obj2);
+//  Logger.log(obj3);
+    
+
+//creates representation of an XML document from given html var 
+var xmlDoc = Xml.parse(html,true);
+var bodyHtml = xmlDoc.html.body.toXmlString(); 
+//get's the document's root element node
+//element is representation of xml element node 
+xmlDoc = XmlService.parse(bodyHtml);
+var root = xmlDoc.getRootElement();  
+//the root element is the parent of all other elements
+//body tag is the parent of all of the other elements  
+Logger.log(root);
  
+  
+  
+
+  
+
+  
+  
+  
+  
+  
+  
+ 
+//var childrenArray=[];
+//    childrenArray= root.getChildren();
+//Logger.log(childrenArray);
+////returns array of all the tags in the doc 
+//  for (var j=0; j<childrenArray.length; j++){
+//      var headingArray = [];
+//
+//  }
+//for loop through all the children to get only heading tags
+
+
+
+
+
+
+
+  
+  
+  
+//  var reqHeadingArray=obj.map(function(obj3) {  
+//    var reqObject={};
+//    reqObject["name"]= obj3;
+//    Logger.log(reqObject);
+//    return obj3;
+//  }); 
+//var reqHeadingArray=[];
+//  reqHeadingArray.push(obj3);
+//    Logger.log(reqHeadingArray);
+  
+//var reqHeadingArray=[];
+//var objLength= obj.length;
+//  Logger.log(objLength);
+//  for (var j=0; j<objLength; j++){
+//    obj[j]=new Object();
+//    reqHeadingArray.push(obj[j]);       
+//    Logger.log(reqHeadingArray);
+//  };
+//  
+//  for (var k=0; k<reqHeadingArray.length;k++){
+//    reqHeadingArray[k].name= obj.;
+//    Logger.log(reqHeadingArray);  
+//  }
+  
+
+
 //for (var i = 0; i < bodyNum; i++) {
 //  //add all these separate objects into an array
 //  var requirementArray=[];
@@ -185,21 +265,7 @@ var html = UrlFetchApp.fetch(urlName, param).getContentText();
 //   
 //  }
   
-////sending to client side to create objects  
-////object is being created, just not the semicolon?  
-//  var requirementName= new Object();
-//  var requirementArray= new Array();
-//  for (var i = 0; i < bodyNum; i++) {
-//         var paragraphStyle= docBody.getChild(i).getHeading();
-// //https://www.codecademy.com/en/forum_questions/50c207bd55df51ff27004775      
-////append to array
-//    if(paragraphStyle=="Heading 1"|| paragraphStyle=="Heading 2") {
-//      requirementName.name= docBody.getChild(i).editAsText().getText();
-//    } else {
-//      requirementName.description= docBody.getChild(i).editAsText().getText();
-//    }
-//    Logger.log(requirementName);
-//  } 
+
 //can see object through console.log  
   
  
@@ -217,7 +283,7 @@ var html = UrlFetchApp.fetch(urlName, param).getContentText();
  * ==============
  *
  */
-
+//loop through requirementArray to send to inflectra 
 
 
 
