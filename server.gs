@@ -214,57 +214,29 @@ var reqArray = [];
     Logger.log(elementArray);
 //all element names are shown in an array
 
+//separate do/while statements to filter out heading and p tags??     
 //getValue only shows the text value of the elements    
     if (elName == "h1"|| elName == "h2") {
       var headingPush = "this is a heading";
        hArray.push(headingPush);  
-//      var headingVal = child.;
-//      reqArray.push(headingVal);
+      var headingVal = child.getValue();
+      reqArray.push(headingVal);
     }
     else {
        var pgPush = "this is a p tag";
         hArray.push(pgPush);  
-//      var pgVal = child.______;
-//      reqArray.push(pgVal);
+      var pgVal = child.getValue();
+      reqArray.push(pgVal);
+//returns body as parent element 
+//      var childParent = child.getParentElement();
+//      Logger.log(childParent);
     }
     Logger.log(hArray);
-//    Logger.log(reqArray);
+    Logger.log(reqArray);
   }
-  
-//filter through element name array and filter out headings and p tags
-//var hArray = []; 
-//  for (var ii=0; ii< elementArray.length; ii++) {
-//    if (elementArray[ii] == "h1") {
-//     Logger.log("this is a heading!");
-//      hArray.push(elementValue);
-//    }
-//    else {
-//     Logger.log("this is a p tag!")
-//    }
-//    Logger.log(hArray);
-//    }  
-  
-  
-  
-  
-  
  
-    
-////returns array of all the tags in the doc 
-//var xmlChildArray = new Array();  
-//  for (var j=0; j<rootChildren.length; j++){
-//    var rootContent = rootChildren[j].getValue(); 
-//    xmlChildArray[j]= new Object(rootContent);
-//    Logger.log(xmlChildArray);
-//  }
-////for loop through all the children to get only heading tags
-//  var xmlHeadingArray = new Array();  
-//  for (var k=0; k< xmlChildArray.length; k++) {
-//     var childHeadings = xmlChildArray.getHeading();
-//    xmlHeadingArray[k]=new Object(childHeadings);
-//       Logger.log(xmlHeadingArray);
-//       }
 
+//result in an array of objects
 //can see object through console.log  
 //returns info to client side
   return html;
