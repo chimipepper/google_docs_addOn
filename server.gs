@@ -202,10 +202,11 @@ var root = xmlDoc.getRootElement();
 var rootChildren = root.getChildren();  
 Logger.log(rootChildren); 
 //var elementName = root.getName(); --> returns tag name 
-
+  
 var elementArray =[];  
 var hArray = []; 
 var reqArray = [];
+var postArray = [];  
   for (var j= 0; j<rootChildren.length; j++) {
          var child = rootChildren[j];
     Logger.log(child);
@@ -214,32 +215,82 @@ var reqArray = [];
     Logger.log(elementArray);
 //all element names are shown in an array
 
-//separate do/while statements to filter out heading and p tags??     
-//getValue only shows the text value of the elements    
+//separate do/while statements to filter out heading and p tags?? 
+//getValue only shows the text value of the elements 
+//Heading tags are filtered    
     if (elName == "h1"|| elName == "h2") {
       var headingPush = "this is a heading";
        hArray.push(headingPush);  
       var headingVal = child.getValue();
       reqArray.push(headingVal);
+      postArray[j] = new Object();
+      postArray[j].name = headingVal;
+//may not need this?      
+      postArray[j].description = [];
     }
+//iterate through p tags to find nested ol and a tags
+//P tags and nested tags are filtered    
     else {
+      var pChild = child.getChildren();
+      Logger.log(pChild);
+      //returns array of element names 
+//if-else statement if pChild == a or li
+      for (var iii=0; iii< pChild.length; iii++) {
+ //gets element name not root
+        var pChildName = pChild[iii].getName();
+        Logger.log(pChildName);         
+        if (pChildName== "a") {
+//how do you find href link???
+          var aTagVal = pChild[iii].getValue(); 
+          var aAttribute = pChild[iii].getAttribute('href').getValue();
+          Logger.log(aAttribute);
+          
+//=====================================================NOT nested within p tag, separate element====================================================          
+          var aTag = "<a href= '" + aAttribute + "'>" + aTagVal + "</a>"
+          reqArray.push(aTag);
+        }
+        if (pChildName== "li") {
+           var liTagVal = pChild[iii].getValue(); 
+           var liTag = "<li>" + liTagVal + "</li>"
+           reqArray.push(liTag);
+        }
+      }
+      
+
        var pgPush = "this is a p tag";
         hArray.push(pgPush);  
       var pgVal = child.getValue();
-      reqArray.push(pgVal);
+      reqArray.push(pgVal);      
+
+      if (elName == "ol") {
+         var olTag = "<ol>"+ pgVal + "</ol>";
+      reqArray.push(olTag);
+      
+      }
+      if (elName == "p") {
+        var pTag = "<p>"+ pgVal + "</p>";
+      reqArray.push(pTag);
+//      postArray[j].description.push(pTag);  --------------------------------------->
+//https://github.com/cferdinandi/nextUntil -->might help chose in between text         
+      }
+//push to description array in postArray 
+      
+      
+      
 //returns body as parent element 
 //      var childParent = child.getParentElement();
-//      Logger.log(childParent);
     }
     Logger.log(hArray);
     Logger.log(reqArray);
-  }
- 
+    Logger.log(postArray);
+  } 
+//<--end of rootChildren for loop-->   
 
+  
 //result in an array of objects
 //can see object through console.log  
 //returns info to client side
-  return html;
+  return postArray;
 }
 
 
