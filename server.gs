@@ -129,19 +129,19 @@ function getProjects(user) {
 function getArray() {
   //returns documentselected
   var docBody = DocumentApp.getActiveDocument().getBody();
-     Logger.log(docBody);
+//     Logger.log(docBody);
   var bodyNum=docBody.getNumChildren();
-      Logger.log(bodyNum);
+//      Logger.log(bodyNum);
 //returns the logs of all the elements individually
   for (var i = 0; i < bodyNum; i++) {
       var numChild= docBody.getChild(i).editAsText().getText();
-      Logger.log(numChild);
+//      Logger.log(numChild); 
   }
   
  
-//id of google doc page   
+//xml doc of document 
 var idName = DocumentApp.getActiveDocument().getId();
-  Logger.log(idName);
+//  Logger.log(idName);
    var forDriveScope = DriveApp.getStorageUsed();
   Logger.log(forDriveScope)
 //google export url to get google doc text (in html format) of the specific google doc id 
@@ -204,9 +204,15 @@ Logger.log(rootChildren);
 //var elementName = root.getName(); --> returns tag name 
   
 var elementArray =[];  
+//this is h or p tag   
 var hArray = []; 
+//elements with tag array  
 var reqArray = [];
+//final array with objects  
 var postArray = [];  
+var SibArray = [];  
+var SiblingsArray = [];  
+
   for (var j= 0; j<rootChildren.length; j++) {
          var child = rootChildren[j];
     Logger.log(child);
@@ -215,17 +221,16 @@ var postArray = [];
     Logger.log(elementArray);
 //all element names are shown in an array
 
-//separate do/while statements to filter out heading and p tags?? 
+
 //getValue only shows the text value of the elements 
-//Heading tags are filtered    
+//Heading tags are filtered     
     if (elName == "h1"|| elName == "h2") {
-      var headingPush = "this is a heading";
-       hArray.push(headingPush);  
+//      var headingPush = "this is a heading";
+//       hArray.push(headingPush);  
       var headingVal = child.getValue();
       reqArray.push(headingVal);
       postArray[j] = new Object();
-      postArray[j].name = headingVal;
-//may not need this?      
+      postArray[j].name = headingVal;      
       postArray[j].description = [];
     }
 //iterate through p tags to find nested ol and a tags
@@ -233,17 +238,17 @@ var postArray = [];
     else {
       var pChild = child.getChildren();
       Logger.log(pChild);
-      //returns array of element names 
+//returns array of element names 
 //if-else statement if pChild == a or li
       for (var iii=0; iii< pChild.length; iii++) {
  //gets element name not root
         var pChildName = pChild[iii].getName();
         Logger.log(pChildName);         
         if (pChildName== "a") {
-//how do you find href link???
+
           var aTagVal = pChild[iii].getValue(); 
           var aAttribute = pChild[iii].getAttribute('href').getValue();
-          Logger.log(aAttribute);
+//          Logger.log(aAttribute);
           
 //=====================================================NOT nested within p tag, separate element====================================================          
           var aTag = "<a href= '" + aAttribute + "'>" + aTagVal + "</a>"
@@ -256,33 +261,67 @@ var postArray = [];
         }
       }
       
-
-       var pgPush = "this is a p tag";
-        hArray.push(pgPush);  
+//push value of child to array if its a p tag (all of them)
+//      var pgPush = "this is a p tag";
+//       hArray.push(pgPush);  
       var pgVal = child.getValue();
       reqArray.push(pgVal);      
-
+   
       if (elName == "ol") {
          var olTag = "<ol>"+ pgVal + "</ol>";
       reqArray.push(olTag);
-      
       }
       if (elName == "p") {
         var pTag = "<p>"+ pgVal + "</p>";
       reqArray.push(pTag);
+        
 //      postArray[j].description.push(pTag);  --------------------------------------->
 //https://github.com/cferdinandi/nextUntil -->might help chose in between text         
-      }
+      } 
+      
+      //         var pgSibling = rootChildren[j + 1].getName();
+//         var pgSiblingLog = "the 2nd sibling is " + pgSibling;
+//         SibArray.push(pgSiblingLog);
+//        if (pgSibling === "p" || pgSibling === "ol") {
+//            var ogSibling = "the first sibling is " + rootChildren[j]
+//            SiblingsArray.push(ogSibling);
+//        }
+//           var pgSibling = "i am a " + rootChildren[j + 1].getName();
+//           SibArray.push(pgSibling);
+       //if statement stating if pgsibling is the same root element as element, than add to a new array     
+//        if (pgSibling === "p") {
+//             var sibElement = "the next p sibling is" + pgSibling;
+//             SiblingsArray.push(sibElement);
+//             
+//        }
+//         if (pgSibling === "ol") {
+//             var olSibElement = "the next ol sibling is" + pgSibling;
+//             SiblingsArray.push(olSibElement);
+//        }
+      
 //push to description array in postArray 
-      
-      
-      
-//returns body as parent element 
-//      var childParent = child.getParentElement();
     }
-    Logger.log(hArray);
+//it's not running because children are having conflict with same name       
+      var siblingChild = rootChildren[j];
+      var sibName = siblingChild.getName();
+      var prevSibling = rootChildren[j - 1];
+      var prevSibElement = prevSibling.getName();
+    if (sibName === "p" || sibName === "ol") {
+     //push all p's and ol's to sibarray
+     //
+     SibArray.push("this is p " + sibName);
+     SiblingsArray.push("previous sibling is" + prevSibElement);
+    }
+//returns element names of root children - why is it returning all of them looped though? 
+      
+      
+    
+    
+//    Logger.log(hArray);
     Logger.log(reqArray);
     Logger.log(postArray);
+    Logger.log(SibArray); 
+    Logger.log(SiblingsArray);
   } 
 //<--end of rootChildren for loop-->   
 
