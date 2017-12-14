@@ -202,172 +202,59 @@ Logger.log(rootChildren);
 //var elementName = root.getName(); --> returns tag name 
   
   
-  for (var j = 0; j<rootChildren.length; j++) {
+//var elementArray = [];  
+for (var j = 0; j<rootChildren.length; j++) {
          var child = rootChildren[j];
          Logger.log(child);
-         var elName = child.getName();
-         elementArray.push(elName);
-          Logger.log(elementArray);
-    
+//         var elName = child.getName();
+//         elementArray.push(elName);
+//          Logger.log(elementArray);
 //all element names are shown in an array
-
+  
 var output = [];
 //1. for loop through all the elements array
-for (var i = 0; i < elementArray.length; i++){
+for (var i = 0; i < rootChildren.length; i++){
    //establish function first 
-    function createReq(i, elementArray) {
+    function createArtifact(i, rootChildren) {
  //3. function: assign name tag depending on the htag --> set description array (it will still be empty)
     var result = {};
  //i is refering to the index of the header tag you've alrady found
-     result.name = elementArray[i],
+     result.name = rootChildren[i].getValue(),
      result.description = [];
+      
+ 
 //4. for loop through input again (but only refer to sibling of the htag you have already chosen) and if it isn't a heading, push it to the description array    
 //starts where index of your heading tag ended 
-      for (var j = i + 1; j < elementArray.length; j++) {
-        if (elementArray[i] === "h1" || elementArray[i] === "h2") {
+      for (var x = i + 1; x < rootChildren.length; x++) {
+        if (rootChildren[x].getName()  === "h1" || rootChildren[x].getName() === "h2") {
  //it's still logging the h1 that come afterwards
          break;
+ //stops after the first h1 finding and keeps repeating         
         }
 //5. else if it IS a heading, it'll stop the loop but the first loop will keep going through the elements array and will keep repeating every time it finds a heading and from there, the function will keep running 
 //break in loop is not working
         else { 
-           result.description.push(elementArray[j]);
+//the description is not being pushed onto the description
+           result.description.push(rootChildren[x].getValue());
           }
       } //end of second for loop
       return result;
-    } //end of createReq function
+    } //end of createArtifact function
   
 //2. find heading tags and create objects (no assignments yet) --> do function when you come across the h tags
-  if (elementArray[i] === "h1" || elementArray[i] === "h2"){
-    Logger.log(elementArray[i]);
+  if (rootChildren[i].getName() === "h1" || rootChildren[i].getName()  === "h2"){
+//    Logger.log(rootChildren[i]);
     //obj is going to be the object returned from the function --> that will be pushed to the final array
-    var obj = createReq( i, elementArray); //enter corresponding parameters 
+    var obj = createArtifact (i, rootChildren); //enter corresponding parameters 
     output.push(obj); 
       }
   else {
     continue; //skip it otherwise 
   } //end of else statement
- 
 } //end of first for loop
-
- Logger.log(output);
-    
+ Logger.log(output);   
   }    
 ////<--end of rootChildren for loop-->     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-////getValue only shows the text value of the elements 
-////Heading tags are filtered     
-//    if (elName == "h1"|| elName == "h2") {
-////      var headingPush = "this is a heading";
-////       hArray.push(headingPush);  
-//      var headingVal = child.getValue();
-//      reqArray.push(headingVal);
-//      postArray[j] = new Object();
-//      postArray[j].name = headingVal;      
-//      postArray[j].description = [];
-//    }
-////iterate through p tags to find nested li and a tags
-////P tags and nested tags are filtered    
-//    else {
-//      var pChild = child.getChildren();
-//      Logger.log(pChild);
-////returns array of element names 
-////if-else statement if pChild == a or li
-//      for (var iii=0; iii< pChild.length; iii++) {
-// //gets element name not root
-//        var pChildName = pChild[iii].getName();
-//        Logger.log(pChildName);         
-//        if (pChildName== "a") {
-//          var aTagVal = pChild[iii].getValue(); 
-//          var aAttribute = pChild[iii].getAttribute('href').getValue();
-////          Logger.log(aAttribute);
-//          
-////=====================================================NOT nested within p tag, separate element====================================================          
-//          var aTag = "<a href= '" + aAttribute + "'>" + aTagVal + "</a>"
-////          reqArray.push(aTag);
-//        }
-//        if (pChildName== "li") {
-//           var liTagVal = pChild[iii].getValue(); 
-//           var liTag = "<li>" + liTagVal + "</li>"
-////           reqArray.push(liTag);
-//        }
-//      }
-//      
-////push value of child to array if its a p tag 
-////      var pgPush = "this is a p tag";
-////       hArray.push(pgPush);  
-//      var pgVal = child.getValue();
-//      reqArray.push(pgVal);      
-//   
-//      if (elName == "ol") {
-//         var olTag = "<ol>"+ pgVal + "</ol>";
-//      reqArray.push(olTag);
-//      }
-//      if (elName == "p") {
-//        var pTag = "<p>"+ pgVal + "</p>";
-//      reqArray.push(pTag);         
-//      } 
-//    }
-////end of else statement
-//////sibling section    
-////var SibArray = [];  
-////var SiblingsArray = [];  
-////    var elem = rootChildren[j];
-////    var elemSibling = rootChildren[j-1];
-////    while (elem) {
-////      //if sibling matches, skip over and get the next sibling   
-////      SibArray.push(elem);
-////    }    
-  
-//
-////        var sibElName = siblingChild.getName();
-////    var firstElement = rootChildren[0];
-////    var firstElementName = firstElement.getName();
-////       var siblingChild2 = rootChildren[j - 1];
-////    var sibElName2 = siblingChild2.getName();
-////      if (sibElName === "h1" || sibElName === "h2" ) { continue;}
-////      SibArray.push(sibElName);
-//     
-////h1 doesn't have a previous sibling so array is stopping    
-////    if (sibElName === "p" && sibElName2 === "h1") {
-////      if (siblingChild2 = firstElement) {
-////           Logger.log("");
-////      }
-////        SiblingsArray.push("SiblingsArray");
-////    }
-//    
-//
-////    Logger.log(hArray);
-//    Logger.log(reqArray);
-//    Logger.log(postArray);
-//    Logger.log(SibArray); 
-//    Logger.log(SiblingsArray);
-
   
 //
 //  
