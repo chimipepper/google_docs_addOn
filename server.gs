@@ -108,8 +108,6 @@ function getProjects(user) {
 
 
 
-
-
 /*
  *
  * ====================
@@ -203,133 +201,180 @@ var rootChildren = root.getChildren();
 Logger.log(rootChildren); 
 //var elementName = root.getName(); --> returns tag name 
   
-var elementArray =[];  
-//this is h or p tag   
-var hArray = []; 
-//elements with tag array  
-var reqArray = [];
-//final array with objects  
-var postArray = [];  
-var SibArray = [];  
-var SiblingsArray = [];  
-
-  for (var j= 0; j<rootChildren.length; j++) {
+  
+  for (var j = 0; j<rootChildren.length; j++) {
          var child = rootChildren[j];
-    Logger.log(child);
+         Logger.log(child);
          var elName = child.getName();
          elementArray.push(elName);
-    Logger.log(elementArray);
+          Logger.log(elementArray);
+    
 //all element names are shown in an array
 
-
-//getValue only shows the text value of the elements 
-//Heading tags are filtered     
-    if (elName == "h1"|| elName == "h2") {
-//      var headingPush = "this is a heading";
-//       hArray.push(headingPush);  
-      var headingVal = child.getValue();
-      reqArray.push(headingVal);
-      postArray[j] = new Object();
-      postArray[j].name = headingVal;      
-      postArray[j].description = [];
-    }
-//iterate through p tags to find nested ol and a tags
-//P tags and nested tags are filtered    
-    else {
-      var pChild = child.getChildren();
-      Logger.log(pChild);
-//returns array of element names 
-//if-else statement if pChild == a or li
-      for (var iii=0; iii< pChild.length; iii++) {
- //gets element name not root
-        var pChildName = pChild[iii].getName();
-        Logger.log(pChildName);         
-        if (pChildName== "a") {
-
-          var aTagVal = pChild[iii].getValue(); 
-          var aAttribute = pChild[iii].getAttribute('href').getValue();
-//          Logger.log(aAttribute);
-          
-//=====================================================NOT nested within p tag, separate element====================================================          
-          var aTag = "<a href= '" + aAttribute + "'>" + aTagVal + "</a>"
-          reqArray.push(aTag);
+var output = [];
+//1. for loop through all the elements array
+for (var i = 0; i < elementArray.length; i++){
+   //establish function first 
+    function createReq(i, elementArray) {
+ //3. function: assign name tag depending on the htag --> set description array (it will still be empty)
+    var result = {};
+ //i is refering to the index of the header tag you've alrady found
+     result.name = elementArray[i],
+     result.description = [];
+//4. for loop through input again (but only refer to sibling of the htag you have already chosen) and if it isn't a heading, push it to the description array    
+//starts where index of your heading tag ended 
+      for (var j = i + 1; j < elementArray.length; j++) {
+        if (elementArray[i] === "h1" || elementArray[i] === "h2") {
+ //it's still logging the h1 that come afterwards
+         break;
         }
-        if (pChildName== "li") {
-           var liTagVal = pChild[iii].getValue(); 
-           var liTag = "<li>" + liTagVal + "</li>"
-           reqArray.push(liTag);
-        }
+//5. else if it IS a heading, it'll stop the loop but the first loop will keep going through the elements array and will keep repeating every time it finds a heading and from there, the function will keep running 
+//break in loop is not working
+        else { 
+           result.description.push(elementArray[j]);
+          }
+      } //end of second for loop
+      return result;
+    } //end of createReq function
+  
+//2. find heading tags and create objects (no assignments yet) --> do function when you come across the h tags
+  if (elementArray[i] === "h1" || elementArray[i] === "h2"){
+    Logger.log(elementArray[i]);
+    //obj is going to be the object returned from the function --> that will be pushed to the final array
+    var obj = createReq( i, elementArray); //enter corresponding parameters 
+    output.push(obj); 
       }
-      
-//push value of child to array if its a p tag (all of them)
-//      var pgPush = "this is a p tag";
-//       hArray.push(pgPush);  
-      var pgVal = child.getValue();
-      reqArray.push(pgVal);      
-   
-      if (elName == "ol") {
-         var olTag = "<ol>"+ pgVal + "</ol>";
-      reqArray.push(olTag);
-      }
-      if (elName == "p") {
-        var pTag = "<p>"+ pgVal + "</p>";
-      reqArray.push(pTag);
-        
-//      postArray[j].description.push(pTag);  --------------------------------------->
-//https://github.com/cferdinandi/nextUntil -->might help chose in between text         
-      } 
-      
-      //         var pgSibling = rootChildren[j + 1].getName();
-//         var pgSiblingLog = "the 2nd sibling is " + pgSibling;
-//         SibArray.push(pgSiblingLog);
-//        if (pgSibling === "p" || pgSibling === "ol") {
-//            var ogSibling = "the first sibling is " + rootChildren[j]
-//            SiblingsArray.push(ogSibling);
-//        }
-//           var pgSibling = "i am a " + rootChildren[j + 1].getName();
-//           SibArray.push(pgSibling);
-       //if statement stating if pgsibling is the same root element as element, than add to a new array     
-//        if (pgSibling === "p") {
-//             var sibElement = "the next p sibling is" + pgSibling;
-//             SiblingsArray.push(sibElement);
-//             
-//        }
-//         if (pgSibling === "ol") {
-//             var olSibElement = "the next ol sibling is" + pgSibling;
-//             SiblingsArray.push(olSibElement);
-//        }
-      
-//push to description array in postArray 
-    }
-//it's not running because children are having conflict with same name       
-      var siblingChild = rootChildren[j];
-      var sibName = siblingChild.getName();
-      var prevSibling = rootChildren[j - 1];
-      var prevSibElement = prevSibling.getName();
-    if (sibName === "p" || sibName === "ol") {
-     //push all p's and ol's to sibarray
-     //
-     SibArray.push("this is p " + sibName);
-     SiblingsArray.push("previous sibling is" + prevSibElement);
-    }
-//returns element names of root children - why is it returning all of them looped though? 
-      
-      
+  else {
+    continue; //skip it otherwise 
+  } //end of else statement
+ 
+} //end of first for loop
+
+ Logger.log(output);
+    
+  }    
+////<--end of rootChildren for loop-->     
     
     
-//    Logger.log(hArray);
-    Logger.log(reqArray);
-    Logger.log(postArray);
-    Logger.log(SibArray); 
-    Logger.log(SiblingsArray);
-  } 
-//<--end of rootChildren for loop-->   
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+////getValue only shows the text value of the elements 
+////Heading tags are filtered     
+//    if (elName == "h1"|| elName == "h2") {
+////      var headingPush = "this is a heading";
+////       hArray.push(headingPush);  
+//      var headingVal = child.getValue();
+//      reqArray.push(headingVal);
+//      postArray[j] = new Object();
+//      postArray[j].name = headingVal;      
+//      postArray[j].description = [];
+//    }
+////iterate through p tags to find nested li and a tags
+////P tags and nested tags are filtered    
+//    else {
+//      var pChild = child.getChildren();
+//      Logger.log(pChild);
+////returns array of element names 
+////if-else statement if pChild == a or li
+//      for (var iii=0; iii< pChild.length; iii++) {
+// //gets element name not root
+//        var pChildName = pChild[iii].getName();
+//        Logger.log(pChildName);         
+//        if (pChildName== "a") {
+//          var aTagVal = pChild[iii].getValue(); 
+//          var aAttribute = pChild[iii].getAttribute('href').getValue();
+////          Logger.log(aAttribute);
+//          
+////=====================================================NOT nested within p tag, separate element====================================================          
+//          var aTag = "<a href= '" + aAttribute + "'>" + aTagVal + "</a>"
+////          reqArray.push(aTag);
+//        }
+//        if (pChildName== "li") {
+//           var liTagVal = pChild[iii].getValue(); 
+//           var liTag = "<li>" + liTagVal + "</li>"
+////           reqArray.push(liTag);
+//        }
+//      }
+//      
+////push value of child to array if its a p tag 
+////      var pgPush = "this is a p tag";
+////       hArray.push(pgPush);  
+//      var pgVal = child.getValue();
+//      reqArray.push(pgVal);      
+//   
+//      if (elName == "ol") {
+//         var olTag = "<ol>"+ pgVal + "</ol>";
+//      reqArray.push(olTag);
+//      }
+//      if (elName == "p") {
+//        var pTag = "<p>"+ pgVal + "</p>";
+//      reqArray.push(pTag);         
+//      } 
+//    }
+////end of else statement
+//////sibling section    
+////var SibArray = [];  
+////var SiblingsArray = [];  
+////    var elem = rootChildren[j];
+////    var elemSibling = rootChildren[j-1];
+////    while (elem) {
+////      //if sibling matches, skip over and get the next sibling   
+////      SibArray.push(elem);
+////    }    
+  
+//
+////        var sibElName = siblingChild.getName();
+////    var firstElement = rootChildren[0];
+////    var firstElementName = firstElement.getName();
+////       var siblingChild2 = rootChildren[j - 1];
+////    var sibElName2 = siblingChild2.getName();
+////      if (sibElName === "h1" || sibElName === "h2" ) { continue;}
+////      SibArray.push(sibElName);
+//     
+////h1 doesn't have a previous sibling so array is stopping    
+////    if (sibElName === "p" && sibElName2 === "h1") {
+////      if (siblingChild2 = firstElement) {
+////           Logger.log("");
+////      }
+////        SiblingsArray.push("SiblingsArray");
+////    }
+//    
+//
+////    Logger.log(hArray);
+//    Logger.log(reqArray);
+//    Logger.log(postArray);
+//    Logger.log(SibArray); 
+//    Logger.log(SiblingsArray);
 
   
-//result in an array of objects
-//can see object through console.log  
-//returns info to client side
-  return postArray;
+//
+//  
+////result in an array of objects
+////can see object through console.log  
+////returns info to client side
+  return output;
 }
 
 
