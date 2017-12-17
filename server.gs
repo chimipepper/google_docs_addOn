@@ -179,6 +179,7 @@ var bodyHtml = xmlDoc.html.body.toXmlString();
 //get's the document's root element node
 //element is representation of xml element node 
 xmlDoc = XmlService.parse(bodyHtml);
+//returns STRING of xml doc
 
 
 //shows entire xml document  
@@ -186,11 +187,7 @@ xmlDoc = XmlService.parse(bodyHtml);
      .setIndent('    ')
      .format(xmlDoc);
  Logger.log(output);
-//find all elements with headings in xml 
-//var outputChildren = output.match(/<h(.)>.*?<\/h\1>/g); 
-// Logger.log(outputChildren);
-//find all text in between headings and add to the same array?
- 
+//returns a format object  
   
   
 //the root element is the parent of all other elements
@@ -221,8 +218,7 @@ for (var i = 0; i < rootChildren.length; i++){
  //i is refering to the index of the header tag you've alrady found
      result.name = rootChildren[i].getValue(),
      result.description = [];
-      
- 
+       
 //4. for loop through input again (but only refer to sibling of the htag you have already chosen) and if it isn't a heading, push it to the description array    
 //starts where index of your heading tag ended 
       for (var x = i + 1; x < rootChildren.length; x++) {
@@ -235,11 +231,43 @@ for (var i = 0; i < rootChildren.length; i++){
 //break in loop is not working
         else { 
 //the description is not being pushed onto the description
-           result.description.push(rootChildren[x].getValue());
+//6. create if statements to differentiate between the types of elements so that you can wrap them in tags to keep their original rich text formatting
+          if (rootChildren[x].getName()  === "p"){
+               var getPValue = rootChildren[x].getValue();
+               var pchildFormat = "<p>"+ getPValue + "</p>";
+             result.description.push(pchildFormat);
+//7. find nested elements within p or ol tags and wrap them to keep their formatting   
+            //how to keep the a tag nested within the p though? 
+            var nestedATags = rootChildren[x].getChildren();
+            //loop through the children to grab each individual a tag and wrap them??
+          
+            Logger.log(nestedATags);
           }
+          else if (rootChildren[x].getName()  === "ol"){
+               var getOlValue = rootChildren[x].getValue();
+               var olChildFormat = "<ol>"+ getOlValue + "</ol>";
+             result.description.push(olChildFormat);
+            //nested li tags within ol tag
+               var nestedLiTags = rootChildren[x].getChildren();
+               Logger.log(nestedLiTags);
+            //what if it was a ul tag??
+          }
+//           result.description.push(rootChildren[x].getValue());
+          } //end of else statement
       } //end of second for loop
       return result;
     } //end of createArtifact function
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   
 //2. find heading tags and create objects (no assignments yet) --> do function when you come across the h tags
   if (rootChildren[i].getName() === "h1" || rootChildren[i].getName()  === "h2"){
@@ -256,8 +284,22 @@ for (var i = 0; i < rootChildren.length; i++){
   }    
 ////<--end of rootChildren for loop-->     
   
-//
-//  
+//switch xml back to html and then post to inflectra 
+//output is only an array of ELEMENTS 
+  function htmlFormat(output) {
+    for (var iii=0; iii< output.length; iii++) {
+    var test = output[iii].description;
+      Logger.log(test);
+  var htmlOutput = XmlService.getRawFormat().format(test);
+      return HtmlService.createHtmlOutput();
+//   Logger.log(htmlOutput);  
+  }
+  }  
+  htmlFormat(output);
+
+ 
+  //returns 'htmlOutput'
+  
 ////result in an array of objects
 ////can see object through console.log  
 ////returns info to client side
