@@ -261,9 +261,21 @@ for (var i = 0; i < rootChildren.length; i++){
   
   
   
-  
-  
-  
+  //https://stackoverflow.com/questions/18635090/parsing-multi-level-xml-with-google-app-script-xmlservice
+  //if rootChildren === p {CALL CHILDRENREQ FUNCTION}
+  //function childrenRec(rootChildren) {
+  //  if (rootChildren.getChildren() === ""){
+ //             push child to description array}
+  //return children of children of children
+//    rootChildren[x].getChildren();
+  //if statements that look through each child and wraps it according to whichever tag it is 
+           //loop through the children array?? and identify which tags (getName) and wrap with appropriate tags
+           //convert to html
+           //push to description array 
+  //it will only return all the children as separate elements rather than keep it in the original format 
+// }
+//how do i keep adding the nested elements back into the original formatting when getChildren() only returns the actual element 
+//replace the DOCUMENT reg ex of that elements with the wrapped tag value   
   
   
   
@@ -286,21 +298,59 @@ for (var i = 0; i < rootChildren.length; i++){
   
 //switch xml back to html and then post to inflectra 
 //output is only an array of ELEMENTS 
-  function htmlFormat(output) {
-    for (var iii=0; iii< output.length; iii++) {
-    var test = output[iii].description;
-      Logger.log(test);
-  var htmlOutput = XmlService.getRawFormat().format(test);
-      return HtmlService.createHtmlOutput();
-//   Logger.log(htmlOutput);  
-  }
-  }  
-  htmlFormat(output);
-
- 
-  //returns 'htmlOutput'
+//  function htmlFormat(output) {
+//    for (var iii=0; iii< output.length; iii++) {
+//    var test = output[iii].description;
+//      Logger.log(test);
+//  var htmlOutput = XmlService.getRawFormat().format(test);
+//      return HtmlService.createHtmlOutput();
+////   Logger.log(htmlOutput);  
+//  }
+//  }  
+//  htmlFormat(output);
   
-////result in an array of objects
+//var testGC = rootChildren[1].getChildren();
+//  for (var v=0; v< testGC.length; v++){
+//        var h1names= testGC[v].getName();
+//    Logger.log(h1names);
+//    if (testGC === "") {
+//        Logger.log("THIS IS THE OUTCOME");
+//    }
+//  }
+//
+//var testGC2 = rootChildren[3].getChildren();
+//  for (var h=0; h< testGC2.length; h++){
+//        var names= testGC2[h].getName();
+//    Logger.log(names);
+//  }
+  
+//getAllContent returns an array of all the element's content  
+var test3= rootChildren[3].getAllContent();
+  Logger.log(test3);
+ for (var c= 0; c < test3.length; c++){
+    Logger.log(test3[c].getType());
+  }  
+//getType returns 'element' or 'text'
+//loop through each rootChildren to getAllContent and get the type of each content to find the children
+         //if the getType is element, it's a nested child 
+var aVal = rootChildren[3].getChildren();
+Logger.log(aVal);  
+  for (var b= 0; b< aVal.length; b++){
+     var rootEl = aVal[b].getType();
+    Logger.log(rootEl);
+  }
+  
+  
+  
+  
+//returns all the content including the root element in an array!!!
+//  for (var g=0; g< test3.length; g++) {
+//    if (test3[g]){
+//    }
+//  }  
+
+  
+
 ////can see object through console.log  
 ////returns info to client side
   return output;
