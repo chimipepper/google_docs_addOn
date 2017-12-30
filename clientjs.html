@@ -25,8 +25,10 @@ function setDevStuff (devMode) {
 //        $("#btn-dev").removeClass("hidden");
         
         user.url = "https://demo.spiraservice.net/jlee";
-        user.userName = "administrator";
-        user.api_key = "{82B456C5-101A-4385-A647-C2DC639433BF}";
+//        user.userName = "administrator";
+//        user.api_key = "{82B456C5-101A-4385-A647-C2DC639433BF}";
+         user.userName = "fredbloggs";
+        user.api_key = "{7A05FD06-83C3-4436-B37F-51BCF0060483}";
     }
 }
 
@@ -95,6 +97,7 @@ function getAuthDetails () {
     user.url = $("#input-url").val();
     user.userName = $("#input-userName").val();
     user.api_key = btoa("&api-key=" + encodeURIComponent($("#input-password").val()));
+    user.apiKey = btoa(encodeURIComponent($("#input-password").val())); //------------------------------------------------------------------------------------------>
 }
 // fill in mock values for easy log in development, enable dev button
 function setAuthDetails () {
@@ -165,17 +168,19 @@ function sendToSpiraAttempt(){
        //send array to inflectra- for now just console log 
        //documentapp can't be defined in clientside
   google.script.run
-             .withSuccessHandler(selectedInfo)
+             .withSuccessHandler(sendArtifactToSpira)
              .getArray();
 };
      
      
-     
-function selectedInfo (info){
-        console.log(info);
-};
-
-
+function sendArtifactToSpira () {
+        google.script.run 
+             .withSuccessHandler(consolePost)
+             .postToSpira(user);
+}
+function consolePost () {
+        console.log("POST WORKED");
+}
 
 
 //// run server side code to manage logout
