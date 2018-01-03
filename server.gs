@@ -875,8 +875,9 @@ var output = [];
    var obj = createArtifact (i, htmlBlob); //enter corresponding parameters --> returns the object
     //save it as a new object to assign the stringify 
    var finalObj = obj;
-      finalObj.description = himalaya.stringify(obj.description); 
-      finalObj.name = obj.name
+      finalObj.Description = himalaya.stringify(obj.description); 
+      finalObj.Name = obj.name
+      finalObj.RequirementTypeId= 4;
     output.push(finalObj); //object is pushed into array  
   }
   else {
@@ -884,11 +885,11 @@ var output = [];
   } //end of else statement
        }  //end of first for loop
  
-Logger.log(output);
+Logger.log(output); 
   return output;
+  
 }// getArray function 
   
-
 
 
 ///*
@@ -910,7 +911,6 @@ function poster(body, currentUser, postUrl) {
     var APIKEY = Utilities.newBlob(decoded).getDataAsString();
   //build URL from args
     var fullUrl = currentUser.url + postUrl + "username=" + currentUser.userName + APIKEY;
-
     //POST headers
     var params = {
         'method': 'post',
@@ -918,10 +918,8 @@ function poster(body, currentUser, postUrl) {
         'muteHttpExceptions': true,
         'payload': JSON.stringify(body)
     };
-
     //call Google fetch function
     var response = UrlFetchApp.fetch(fullUrl, params);
-
     //returns parsed JSON
     //unparsed response contains error codes if needed
     return response;
@@ -929,25 +927,24 @@ function poster(body, currentUser, postUrl) {
   
 }
 
-function postToSpira(user) {
-    var testPost = {
-      "Name": "TESTING POST REQUEST AGAIN",
-      "RequirementTypeId":4,
-      "Description": "<h1>POST TEST</h1>"
-}
-//swtich to project id that's chosen------------------------------------------------------------------------->    
+function postToSpira(user, output) {
+//    var testPost = {
+//      Name: "TESTING POST REQUEST AGAIN3",
+//      RequirementTypeId:4,
+//      Description: "<h1>POST TEST</h1>"
+//}
+    for (var t=0; t<output.length;t++) {
+      var outputObject=output[t];
+         Logger.log(output[t]);
+      //swtich to project id that's chosen------------------------------------------------------------------------->    
     var postUrl = API_BASE + 1 + '/requirements?';
   //projectId
-    var response = poster(testPost, user, postUrl);
-   Logger.log(response);
+    var response = poster(output[t], user, postUrl);
+         }
   return response;
 } 
 
 
-
-
-
-//<------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
 
 
 /*

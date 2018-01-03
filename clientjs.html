@@ -168,19 +168,25 @@ function sendToSpiraAttempt(){
        //send array to inflectra- for now just console log 
        //documentapp can't be defined in clientside
   google.script.run
-             .withSuccessHandler(sendArtifactToSpira)
+                .withSuccessHandler(sendArtifactToSpira)
              .getArray();
 };
      
      
-function sendArtifactToSpira () {
+function sendArtifactToSpira (output) {
+for (var b=0; b<output.length;b++) {
+console.log(output[b]);
+}
         google.script.run 
              .withSuccessHandler(consolePost)
-             .postToSpira(user);
+             .postToSpira(user,output);
 }
 function consolePost () {
         console.log("POST WORKED");
 }
+
+
+
 
 
 //// run server side code to manage logout
