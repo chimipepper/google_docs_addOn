@@ -232,7 +232,7 @@
                 title="Help with creating and loading a template onto the spreadsheet"
                 type="button"
                 >
-                TEMPLATES
+                DOCUMENT
             </button>
             <button 
                 class="btn-help"
@@ -281,14 +281,8 @@
                 </li>
                 <li>
                     <p>
-                        <b>Disconnect</b>
-                        <small>This button will close your connection with SpiraTeam and clear your data. WARNING: your spreadsheet data will be erased as a security measure on disconnect.</small>
-                    </p>
-                </li>
-                <li>
-                    <p>
-                        <b>Clear</b>
-                        <small>This button will clear the contents of your current tab including the template.</small>
+                        <b>Logout</b>
+                        <small>This button will close your connection with SpiraTeam </small>
                     </p>
                 </li>
                 <li>
@@ -297,19 +291,12 @@
                         <small>Select a project from the menu.</small>
                     </p>
                 </li>
-                <li>
+               <!-- <li>
                     <p>
                         <b>Artifacts</b>
                         <small>Select an artifact from the menu.</small>
                     </p>
-                </li>
-              
-                <li>
-                    <p>
-                        <b>Save</b>
-                        <small>Clicking this button will save your current spreadsheet information into a new tab.</small>
-                    </p>
-                </li>
+                </li>-->
                 <li>
                     <p>
                         <b>Send to SpiraTeam</b>
@@ -331,23 +318,24 @@
         <div id="help-section-fields" class="help-section hidden">
             <h4>Help For Specific Fields</h4>
             <ul class="list">
-                <li>
+             <!--   <li>
                     <p>
                         <b>ID Fields</b>
                         <small>Stores the id of the item. This field MUST be left blank to add new items to SpiraTeam</small>
                     </p>
-                </li>
+                </li>-->
                 <li>
                     <p>
                         <b>Name</b>
-                        <small><b>**Required Field** </b>The name of the item. For REQUIREMENTS and RELEASES this field supports indentation, add a “ > “ symbol to indicate how the items in the artifact hierarchy are organized.</small>
+                        <small><b>**Required Field** </b>The name of the REQUIREMENT item <br> Bold and italic formatting is currently unable to be imported to Spirateam</small>
                     </p>
                     <pre>
-Example:
+<!--Example:
 Item 1
 >Item 2 child of item 1
 >Item 3 child of item 1
->>Item 4 child of item 3
+>>Item 4 child of item 3--> 
+*Indentation documentation goes here*
                     </pre>
                 </li>
                 

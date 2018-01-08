@@ -168,7 +168,7 @@ function sendToSpiraAttempt(){
        //send array to inflectra- for now just console log 
        //documentapp can't be defined in clientside
   google.script.run
-                .withSuccessHandler(sendArtifactToSpira)
+             .withSuccessHandler(sendArtifactToSpira)
              .getArray();
 };
      
@@ -184,8 +184,6 @@ console.log(output[b]);
 function consolePost () {
         console.log("POST WORKED");
 }
-
-
 
 
 
