@@ -104,8 +104,6 @@ function getProjects(user) {
 
 
 
-
-
 /*
  *
  * ====================
@@ -132,13 +130,11 @@ function getArray() {
       var numChild= docBody.getChild(i).editAsText().getText();
 //      Logger.log(numChild); 
   }
-  
- 
 //xml doc of document 
 var idName = DocumentApp.getActiveDocument().getId();
 //  Logger.log(idName);
    var forDriveScope = DriveApp.getStorageUsed();
-  Logger.log(forDriveScope)
+//  Logger.log(forDriveScope)
 //google export url to get google doc text (in html format) of the specific google doc id 
 var urlName = "https://docs.google.com/feeds/download/documents/export/Export?id=" + idName + "&exportFormat=html&format=html";
  var param = {
@@ -160,7 +156,7 @@ var html = UrlFetchApp.fetch(urlName, param).getContentText();
     html = html.replace(/<(span|\/span|body|\/body|html|\/html)>/g, '');
     // clearly the superior way of denoting line breaks
     html = html.replace(/<br>/g, '<br />');
-   Logger.log(html);  
+//   Logger.log(html);  
 //html is one string
 //regEx cleans up html string  
  var obj2= html.match(/<h(.)>.*?<\/h\1>/g);
@@ -169,11 +165,7 @@ var html = UrlFetchApp.fetch(urlName, param).getContentText();
 //  Logger.log(obj);
 //   Logger.log(obj2);
  
-  
-
-
 //-----------------------------------------------------------------------------------START OF HIMALAYA.JS ------------------------------------------------------------------------------------------------------------------------------->
-
 //-------------------------------------------------------------------------------------END OF HIMALAYA.JS ------------------------------------------------------------------------------------------------------------------------------->
 
   //loop through all objects of htmlBlob to separate headings and p tags 
@@ -181,9 +173,8 @@ var html = UrlFetchApp.fetch(urlName, param).getContentText();
   //for loop first for headings (by tagnames) --> create new object
   //foor loop second time for pushing everything else into description array
  var htmlBlob = himalaya.parse(html); 
-  Logger.log(htmlBlob);
+//  Logger.log(htmlBlob);
 //returns array of html children as objects
-  
   
 var output = [];  
     function createArtifact(i, htmlBlob) {
@@ -207,7 +198,7 @@ var output = [];
             //if there is nothing in the content property, the loop stops, so if statement is required to skip those with no content
              var getContent = htmlBlob[x].children;
             if (getContent.length === 0.0) {
-              Logger.log("this is a zero");
+//              Logger.log("this is a zero");
                 continue;
             }
             else {
@@ -225,7 +216,7 @@ var output = [];
   for (var i= 0; i< htmlBlob.length; i++) {
    //establish function first
     //2. find heading tags and create objects (no assignments yet) --> do function when you come across the h tags
-  if (htmlBlob[i].tagName === "h1" || htmlBlob[i].tagName  === "h2"){
+  if (htmlBlob[i].tagName === "h1" || htmlBlob[i].tagName  === "h2" || htmlBlob[i].tagName  === "h3"|| htmlBlob[i].tagName  === "h4"|| htmlBlob[i].tagName  === "h5"|| htmlBlob[i].tagName  === "h6"){
     //obj is going to be the object returned from the function --> that will be pushed to the final array
    var obj = createArtifact (i, htmlBlob); //enter corresponding parameters --> returns the object
     //save it as a new object to assign the stringify 
@@ -233,6 +224,17 @@ var output = [];
       finalObj.Description = himalaya.stringify(obj.description); 
       finalObj.Name = obj.name
       finalObj.RequirementTypeId= 4;
+    if (htmlBlob[i].tagName === "h1"){
+      finalObj.indentValue= 0;
+    }
+     if (htmlBlob[i].tagName === "h2"){
+      finalObj.indentValue= 1;
+    }
+      if (htmlBlob[i].tagName === "h3"){
+      finalObj.indentValue= 2;
+    }
+
+//http://api.inflectra.com/spira/services/v5_0/RestServiceOperation.aspx?uri=projects%2f%7bproject_id%7d%2frequirements%2findent%2f%7bindent_position%7d&method=POST ------------------------------------------------------------------->
     output.push(finalObj); //object is pushed into array  
   }
   else {
@@ -279,26 +281,44 @@ function poster(body, currentUser, postUrl) {
     //unparsed response contains error codes if needed
     return response;
     //return JSON.parse(response);
-  
+}
+
+
+function indentation(currentIndex,output, previousIndex) { 
+  //  if (outputIndex.indentValue === 0) {
+  var current= currentIndex.indentValue;
+  if (currentIndex === output[0]) {
+        var previous=0;
+  }
+    else {
+      var previous = previousIndex.indentValue
+    }
+    if (current ===0) {
+     var indentPosition = -10
+    }
+    if (current-previous===1) {
+        var indentPosition = 1;
+    }
+    if (current- previous === -1){
+     var indentPosition = -1;
+    }
+  return indentPosition;
 }
 
 function postToSpira(user, output) {
-//    var testPost = {
-//      Name: "TESTING POST REQUEST AGAIN3",
-//      RequirementTypeId:4,
-//      Description: "<h1>POST TEST</h1>"
-//}
-    for (var t=0; t<output.length;t++) {
-      var outputObject=output[t];
-         Logger.log(output[t]);
+    for (var t= 0; t< output.length; t++) {
+      var indentPosition= indentation(output[t],output,output[t-1])
       //swtich to project id that's chosen------------------------------------------------------------------------->    
-    var postUrl = API_BASE + 1 + '/requirements?';
+    var postUrl = API_BASE + 1 + '/requirements/indent/' + indentPosition + '?';
+      //indentPosition
   //projectId
     var response = poster(output[t], user, postUrl);
-         }
+         }//end of for loop
   return response;
 } 
 
+
+//only recognizes if it is or isn't 0
 
 
 
