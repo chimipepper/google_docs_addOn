@@ -14,7 +14,7 @@ var API_BASE = '/services/v5_0/RestService.svc/projects/',
         someError: 3
     },
     INLINE_STYLING = "style='font-family: sans-serif'";
-
+var indentSum = 0;
 
 /*
  * ======================
@@ -166,8 +166,6 @@ var html = UrlFetchApp.fetch(urlName, param).getContentText();
 //   Logger.log(obj2);
  
 //-----------------------------------------------------------------------------------START OF HIMALAYA.JS ------------------------------------------------------------------------------------------------------------------------------->
-//-------------------------------------------------------------------------------------END OF HIMALAYA.JS ------------------------------------------------------------------------------------------------------------------------------->
-
   //loop through all objects of htmlBlob to separate headings and p tags 
   // use original function
   //for loop first for headings (by tagnames) --> create new object
@@ -225,16 +223,33 @@ var output = [];
       finalObj.Name = obj.name
       finalObj.RequirementTypeId= 4;
     if (htmlBlob[i].tagName === "h1"){
-      finalObj.indentValue= 0;
+      finalObj.indentValue= 1,
+      finalObj.indentPosition = 0
     }
      if (htmlBlob[i].tagName === "h2"){
-      finalObj.indentValue= 1;
+      finalObj.indentValue= 2,
+      finalObj.indentPosition = 1
+
     }
       if (htmlBlob[i].tagName === "h3"){
-      finalObj.indentValue= 2;
+      finalObj.indentValue= 3,
+      finalObj.indentPosition = 2
+    }
+    if (htmlBlob[i].tagName === "h4"){
+      finalObj.indentValue= 4,
+      finalObj.indentPosition = 3
+    }
+    if (htmlBlob[i].tagName === "h5"){
+      finalObj.indentValue= 5,
+      finalObj.indentPosition = 4
+
+    }
+    if (htmlBlob[i].tagName === "h6"){
+      finalObj.indentValue= 6,
+      finalObj.indentPosition = 5
     }
 
-//http://api.inflectra.com/spira/services/v5_0/RestServiceOperation.aspx?uri=projects%2f%7bproject_id%7d%2frequirements%2findent%2f%7bindent_position%7d&method=POST ------------------------------------------------------------------->
+//http://api.inflectra.com/spira/services/v5_0/RestServiceOperation.aspx?uri=projects%2f%7bproject_id%7d%2frequirements%2findent%2f%7bindent_position%7d&method=POST 
     output.push(finalObj); //object is pushed into array  
   }
   else {
@@ -257,8 +272,7 @@ Logger.log(output);
 // *
 // */
 ////loop through output to send to inflectra 
-////test POST 
-//<------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------->
+
 // General fetch function, using Google's built in fetch api
 // @param: body - json object
 // @param: currentUser - user object storing login data from client
@@ -284,32 +298,116 @@ function poster(body, currentUser, postUrl) {
 }
 
 
+
+//this will return the sum of the indents
+//if it's a returning H1, reset to 0;
+//took var out
+function getIndentSum (currentIndex, current,output, previous) {
+   if (currentIndex === output[0]) {
+     indentSum = 0; 
+  }
+  if (current === 1) {
+     indentSum = 0; 
+  }
+  if (current - previous === 0) {
+      indentSum= indentSum + 0;
+  }
+  if (current- previous >= 1 && currentIndex !== output[0]) {
+      indentSum= indentSum + 1
+  }
+  if (current-previous < 0) {
+//      indentSum= indentSum + 0; 
+        var currentIP = currentIndex.indentPosition;
+          if (indentSum > currentIP) {
+            var difference= currentIP - indentSum;
+            indentSum = indentSum + difference;
+      }
+      if (indentSum < currentIP) {
+        indentSum = 0
+      } 
+  }
+    Logger.log("this is the indent sum");
+    Logger.log(indentSum);
+}
+
+//this will return the indent position depending on the current indent sum 
 function indentation(currentIndex,output, previousIndex) { 
-  //  if (outputIndex.indentValue === 0) {
+//1. compare heading styles to see if it should be shifted right or left
+//2. if the current obj H > previous obj H, indent position= 1 AND add 1 to indentSum
+//3. if current obj H = previous obh H, indent position = 0 AND add 0 to indentSum
+//4. if current obj H < previous obj H, indent position = indentSum - obj.indentPosition IF the indentSum > indentPosition
+                                      //indent position = 0 IF indentSum < indentPosition 
+//5. if going back to H1, indentSum is reset to 0- if it's not output[0] and H1, reset to 0 
   var current= currentIndex.indentValue;
-  if (currentIndex === output[0]) {
-        var previous=0;
+  Logger.log("current object is" + current);
+  if (currentIndex === output[0]) { 
+      var previous=0;
+             getIndentSum(currentIndex, current, output, previous); 
+    var indentPositionValue = -10
   }
     else {
       var previous = previousIndex.indentValue
+       
+//might have to add this one to currentValue (since its not starting at 0)  
+//reset indentSum to 0 for every H1? 
+    if (current ===1) {
+            Logger.log("current ===1");
+     var indentPositionValue = -10;
+       getIndentSum(currentIndex, current, output, previous); 
+        return indentPositionValue;
     }
-    if (current ===0) {
-     var indentPosition = -10
+    if (current- previous === 0){
+            Logger.log("current- previous === 0");
+     var indentPositionValue = 0;
+      getIndentSum(currentIndex, current, output, previous); 
     }
-    if (current-previous===1) {
-        var indentPosition = 1;
+    if (current- previous >= 1){
+                  Logger.log("current- previous >=1");
+     var indentPositionValue = 1;
+       getIndentSum(currentIndex, current,output, previous); 
     }
-    if (current- previous === -1){
-     var indentPosition = -1;
+
+    if (current- previous < 0){
+      Logger.log(current);
+      Logger.log(previous);
+      Logger.log(current-previous);
+          var currentIP = currentIndex.indentPosition;
+      Logger.log("this is the currentIP");
+      Logger.log(currentIP);
+//     var previousIP = previousIndex.indentPosition;
+      //move currentIndentSum to other function and do the comparison there 
+    
+     //this is only getting the indent position  
+      if (indentSum >= currentIP) {
+        Logger.log("indentSum >= currentIP");
+       Logger.log(currentIP);  
+      Logger.log(indentSum);
+        var indentPositionValue= currentIP-indentSum;
+        Logger.log(indentPositionValue);
+         getIndentSum(currentIndex, current, output, previous); 
+      }
+      if (indentSum < currentIP) {
+        Logger.log("indentSum < currentIP");
+        var indentPositionValue= 0;
+      }    
     }
-  return indentPosition;
-}
+      
+    }
+
+  return indentPositionValue;
+} //end of indentation function
+
+
+
+
+
 
 function postToSpira(user, output) {
     for (var t= 0; t< output.length; t++) {
       var indentPosition= indentation(output[t],output,output[t-1])
       //swtich to project id that's chosen------------------------------------------------------------------------->    
     var postUrl = API_BASE + 1 + '/requirements/indent/' + indentPosition + '?';
+      Logger.log(postUrl);
       //indentPosition
   //projectId
     var response = poster(output[t], user, postUrl);
