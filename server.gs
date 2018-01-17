@@ -61,8 +61,6 @@ function include(filename) {
 
 
 
-
-
 /*
  *
  * ====================
@@ -162,8 +160,7 @@ var html = UrlFetchApp.fetch(urlName, param).getContentText();
  var obj2= html.match(/<h(.)>.*?<\/h\1>/g);
 //grabs EVERYTHING in between the first and last p tag  
 //  var obj2= html.match(/<p>.*<\/p>/g);
-//  Logger.log(obj);
-//   Logger.log(obj2);
+
  
 //-----------------------------------------------------------------------------------START OF HIMALAYA.JS ------------------------------------------------------------------------------------------------------------------------------->
   //loop through all objects of htmlBlob to separate headings and p tags 
@@ -184,7 +181,7 @@ var output = [];
  //4. for loop through input again (but only refer to sibling of the htag you have already chosen) and if it isn't a heading, push it to the description array    
 //starts where index of your heading tag ended      
        for (var x = i + 1; x < htmlBlob.length; x++) {
-        if (htmlBlob[x].tagName === "h1" || htmlBlob[x].tagName  === "h2") {
+        if (htmlBlob[x].tagName === "h1" || htmlBlob[x].tagName  === "h2" || htmlBlob[i].tagName  === "h3"|| htmlBlob[i].tagName  === "h4"|| htmlBlob[i].tagName  === "h5"|| htmlBlob[i].tagName  === "h6") {
          break;       
         }
 //5. else if it IS a heading, it'll stop the loop but the first loop will keep going through the elements array and will keep repeating every time it finds a heading and from there, the function will keep running 
@@ -196,7 +193,6 @@ var output = [];
             //if there is nothing in the content property, the loop stops, so if statement is required to skip those with no content
              var getContent = htmlBlob[x].children;
             if (getContent.length === 0.0) {
-//              Logger.log("this is a zero");
                 continue;
             }
             else {
@@ -326,8 +322,6 @@ function getIndentSum (currentIndex, current,output, previous) {
         indentSum = 0
       } 
   }
-    Logger.log("this is the indent sum");
-    Logger.log(indentSum);
 }
 
 //this will return the indent position depending on the current indent sum 
@@ -339,10 +333,15 @@ function indentation(currentIndex,output, previousIndex) {
                                       //indent position = 0 IF indentSum < indentPosition 
 //5. if going back to H1, indentSum is reset to 0- if it's not output[0] and H1, reset to 0 
   var current= currentIndex.indentValue;
-  Logger.log("current object is" + current);
-  if (currentIndex === output[0]) { 
+  if (currentIndex === output[0]) {
+//only skips this instead of stopping function
+    if (current !== 1){
+        var headingAlert = DocumentApp.getUi();
+      var  alertMessage = headingAlert.alert('Error: Please change the formatting of the first title to Heading1');
+      return;
+    }
       var previous=0;
-             getIndentSum(currentIndex, current, output, previous); 
+         getIndentSum(currentIndex, current, output, previous); 
     var indentPositionValue = -10
   }
     else {
@@ -351,47 +350,29 @@ function indentation(currentIndex,output, previousIndex) {
 //might have to add this one to currentValue (since its not starting at 0)  
 //reset indentSum to 0 for every H1? 
     if (current ===1) {
-            Logger.log("current ===1");
      var indentPositionValue = -10;
        getIndentSum(currentIndex, current, output, previous); 
         return indentPositionValue;
     }
     if (current- previous === 0){
-            Logger.log("current- previous === 0");
      var indentPositionValue = 0;
       getIndentSum(currentIndex, current, output, previous); 
     }
     if (current- previous >= 1){
-                  Logger.log("current- previous >=1");
      var indentPositionValue = 1;
        getIndentSum(currentIndex, current,output, previous); 
     }
 
     if (current- previous < 0){
-      Logger.log(current);
-      Logger.log(previous);
-      Logger.log(current-previous);
           var currentIP = currentIndex.indentPosition;
-      Logger.log("this is the currentIP");
-      Logger.log(currentIP);
-//     var previousIP = previousIndex.indentPosition;
-      //move currentIndentSum to other function and do the comparison there 
-    
-     //this is only getting the indent position  
       if (indentSum >= currentIP) {
-        Logger.log("indentSum >= currentIP");
-       Logger.log(currentIP);  
-      Logger.log(indentSum);
         var indentPositionValue= currentIP-indentSum;
-        Logger.log(indentPositionValue);
          getIndentSum(currentIndex, current, output, previous); 
       }
       if (indentSum < currentIP) {
-        Logger.log("indentSum < currentIP");
         var indentPositionValue= 0;
       }    
     }
-      
     }
 
   return indentPositionValue;
@@ -402,16 +383,32 @@ function indentation(currentIndex,output, previousIndex) {
 
 
 
-function postToSpira(user, output) {
-    for (var t= 0; t< output.length; t++) {
+function postToSpira(user, output,selectedProject) {
+  // Display a dialog box with a title, message, input field, and "Yes" and "No" buttons. The
+ // user can also close the dialog by clicking the close button in its title bar.
+ var ui = DocumentApp.getUi();
+ var alertResponse = ui.alert('Are you sure you want to continue?', ui.ButtonSet.YES_NO);
+
+  
+  
+  
+ // Process the user's response.
+ if (alertResponse == ui.Button.YES) {
+      for (var t= 0; t< output.length; t++) {
       var indentPosition= indentation(output[t],output,output[t-1])
-      //swtich to project id that's chosen------------------------------------------------------------------------->    
-    var postUrl = API_BASE + 1 + '/requirements/indent/' + indentPosition + '?';
+      //swtich to project id that's chosen----------------------------------------------------------------------------------------------------------------------------------------------------------------------------->    
+    var postUrl = API_BASE + selectedProject + '/requirements/indent/' + indentPosition + '?';
       Logger.log(postUrl);
-      //indentPosition
-  //projectId
+    
     var response = poster(output[t], user, postUrl);
          }//end of for loop
+
+ } else if (alertResponse == ui.Button.NO) {
+   Logger.log('User cancelled');
+ } else {
+   Logger.log('The user clicked the close button in the dialog\'s title bar.');
+ }
+  
   return response;
 } 
 

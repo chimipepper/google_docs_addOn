@@ -81,6 +81,20 @@ function setDropdown (selectId, array, firstMessage) {
 
 
 
+//
+//// retrieves the project object that matches the project selected in the dropdown
+//// returns a project object
+//function getSelectedProject (user) {
+//    // store dropdown value
+//    let projectDropdownVal = $('#select-project option:selected').val();
+//    // filter the project lists to those chosen 
+//    let projectSelected = user.projects.filter(function(project) {
+//        return project.id == projectDropdownVal;
+//    })[0];
+//    return projectSelected;
+//}
+
+
 
 
 
@@ -97,7 +111,7 @@ function getAuthDetails () {
     user.url = $("#input-url").val();
     user.userName = $("#input-userName").val();
     user.api_key = btoa("&api-key=" + encodeURIComponent($("#input-password").val()));
-    user.apiKey = btoa(encodeURIComponent($("#input-password").val())); //------------------------------------------------------------------------------------------>
+    user.apiKey = btoa(encodeURIComponent($("#input-password").val())); 
 }
 // fill in mock values for easy log in development, enable dev button
 function setAuthDetails () {
@@ -135,9 +149,24 @@ function populateProjects (projects) {
  
     // now add paired down project array to data store
     user.projects = pairedDownProjectsData;
+    
+    
+    
+    
+    console.log(user.projects);
+//    var selectedProject = getSelectedProject(user);
+//console.log(selectedProject);
+
+
     // get UI logic ready for main panel
     showMainPanel();
 }
+
+////these are outside of function, so it's undefined
+//console.log(user.projects);
+
+
+
 
 
 
@@ -156,17 +185,22 @@ function showMainPanel () {
     // displays the current logged in user name
     $('#js--loggedInAs').html('Logged in as: ' + user.userName);
     setDropdown("select-project", user.projects, "Select a project");
-//    setDropdown("select-artifact", params.artifacts, "Select an artifact");
+//    setDropdown("select-artifact", user.artifacts, "Select an artifact");
     showPanel("main");
     hideLoadingSpinner();
 }
 
+
+
+
+
+
 //send selected information to Spira requirements list in the form of an array 
 function sendToSpiraAttempt(){
+      
+//         alert("Are you sure you want to post this document?");
        //grab selected styled text 
        //put text into an array
-       //send array to inflectra- for now just console log 
-       //documentapp can't be defined in clientside
   google.script.run
              .withSuccessHandler(sendArtifactToSpira)
              .getArray();
@@ -174,12 +208,16 @@ function sendToSpiraAttempt(){
      
      
 function sendArtifactToSpira (output) {
+  var selectedProject = document.getElementById("select-project").selectedIndex;
+console.log(selectedProject);
+
 for (var b=0; b<output.length;b++) {
 console.log(output[b]);
 }
         google.script.run 
              .withSuccessHandler(consolePost)
-             .postToSpira(user,output);
+             .postToSpira(user,output,selectedProject);
+             //selectedProject
 }
 function consolePost () {
         console.log("POST WORKED");
@@ -197,10 +235,31 @@ function consolePost () {
 //// @param: shouldLogout - a true or false value from google
 //function logout (shouldLogout) {
 //    if (shouldLogout) {
-//        clearAddonData();
 //        resetSidebar();
 //    }
 //}
+// resets the sidebar following logout
+//function resetSidebar () {
+//    // clear input field values
+//    $('#input-url, #input-userName, #input-password').val('');
+//    
+//    // hide other panels, so login page is visible
+//    $(".panel:not(#panel-auth)").addClass("offscreen");
+//    
+//    // disable buttons and dropdowns
+//    $("#btn-template, #select-artifact, #btn-toSpira").prop("disabled", true);
+//    // reset artifact dropdown to 'Select an Artifact'
+//    $("#select-artifact option[value='Select an Artifact']").attr("selected", "selected");
+
+//    // reset anything required if in devmode
+//    setDevStuff();
+//}
+
+
+
+
+
+
 
 
 
