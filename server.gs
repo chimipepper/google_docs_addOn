@@ -425,9 +425,14 @@ function postToSpira(user, output,selectedProject) {
 
 //modal shows progress of items being sent =========================================================================================================================================================================================>
     var response = poster(output[t], user, postUrl);
- var htmlOutputSuccess = 'Sending ' + (t + 1) + ' of ' + output.length + ' requirements';
-//alert button is pausing server side until ok button is pressed --- needs to be continuous
- var progressResponse = ui.alert(htmlOutputSuccess);
+   var htmlOutput = HtmlService.createHtmlOutput('<p ' + INLINE_STYLING + '>' + 'Sending ' + (t + 1) + ' of ' + (output.length) + '</p>').setWidth(200).setHeight(75);
+//   var htmlOutput = HtmlService.createHtmlOutput('<p ' + INLINE_STYLING + 'Sending ' + (t + 1) + ' of ' + (output.length) + '</p>').setWidth(200).setHeight(75);
+             DocumentApp.getUi().showModalDialog(htmlOutput, 'Progress');
+        
+        
+// var htmlOutputSuccess = 'Sending ' + (t + 1) + ' of ' + output.length + ' requirements';
+////alert button is pausing server side until ok button is pressed --- needs to be continuous
+// var progressResponse = ui.alert(htmlOutputSuccess);
         
         
         
