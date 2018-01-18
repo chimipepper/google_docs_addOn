@@ -64,6 +64,31 @@ function include(filename) {
 /*
  *
  * ====================
+ * LOGOUT FUNCTION
+ * ====================
+ *
+ * user would like to logout- resets sidebar
+ *
+ */
+// Alert pop up for data clear warning
+// @param: string - message to be displayed
+function warn(string) {
+    var getUi = DocumentApp.getUi();
+    //alert popup with yes and no button
+    var response = getUi.alert(string, getUi.ButtonSet.YES_NO);
+    //returns with user choice
+    if (response == getUi.Button.YES) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+
+
+/*
+ *
+ * ====================
  * DATA "GET" FUNCTIONS
  * ====================
  *
@@ -175,7 +200,7 @@ var output = [];
     function createArtifact(i, htmlBlob) {
 //3. function: assign name tag depending on the htag --> set description array (it will still be empty)       
           var result = {};
- //i is refering to the index of the header tag you've alrady found
+ //i is refering to the index of the header tag you've already found
      result.name = htmlBlob[i].children[0].content,
      result.description = [];
  //4. for loop through input again (but only refer to sibling of the htag you have already chosen) and if it isn't a heading, push it to the description array    
@@ -185,9 +210,7 @@ var output = [];
          break;       
         }
 //5. else if it IS a heading, it'll stop the loop but the first loop will keep going through the elements array and will keep repeating every time it finds a heading and from there, the function will keep running 
-//break in loop is not working
       else { 
-//the description is not being pushed onto the description
 //6. create if statements to differentiate between the types of elements so that you can wrap them in tags to keep their original rich text formatting
           if (htmlBlob[x].tagName  === "p" || htmlBlob[x].tagName  === "ol"){
             //if there is nothing in the content property, the loop stops, so if statement is required to skip those with no content
@@ -216,7 +239,7 @@ var output = [];
     //save it as a new object to assign the stringify 
    var finalObj = obj;
       finalObj.Description = himalaya.stringify(obj.description); 
-      finalObj.Name = obj.name
+      finalObj.Name = obj.name 
       finalObj.RequirementTypeId= 4;
     if (htmlBlob[i].tagName === "h1"){
       finalObj.indentValue= 1,
@@ -255,7 +278,6 @@ var output = [];
  
 Logger.log(output); 
   return output;
-  
 }// getArray function 
   
 
@@ -334,11 +356,11 @@ function indentation(currentIndex,output, previousIndex) {
 //5. if going back to H1, indentSum is reset to 0- if it's not output[0] and H1, reset to 0 
   var current= currentIndex.indentValue;
   if (currentIndex === output[0]) {
-//only skips this instead of stopping function
     if (current !== 1){
         var headingAlert = DocumentApp.getUi();
-      var  alertMessage = headingAlert.alert('Error: Please change the formatting of the first title to Heading1');
-      return;
+      var  alertMessage = headingAlert.alert('Error: Please change the formatting of the first title to Heading1 -Please refer to Help guide for more information-');
+      var indentPositionValue = 20;
+      return indentPositionValue;
     }
       var previous=0;
          getIndentSum(currentIndex, current, output, previous); 
@@ -388,32 +410,41 @@ function postToSpira(user, output,selectedProject) {
  // user can also close the dialog by clicking the close button in its title bar.
  var ui = DocumentApp.getUi();
  var alertResponse = ui.alert('Are you sure you want to continue?', ui.ButtonSet.YES_NO);
-
-  
-  
-  
  // Process the user's response.
  if (alertResponse == ui.Button.YES) {
       for (var t= 0; t< output.length; t++) {
       var indentPosition= indentation(output[t],output,output[t-1])
-      //swtich to project id that's chosen----------------------------------------------------------------------------------------------------------------------------------------------------------------------------->    
+      if (indentPosition === 20) {
+        var response = "CHANGE HEADING";
+         break;
+      }
     var postUrl = API_BASE + selectedProject + '/requirements/indent/' + indentPosition + '?';
       Logger.log(postUrl);
-    
-    var response = poster(output[t], user, postUrl);
-         }//end of for loop
+        
+        
 
+//modal shows progress of items being sent =========================================================================================================================================================================================>
+    var response = poster(output[t], user, postUrl);
+ var htmlOutputSuccess = 'Sending ' + (t + 1) + ' of ' + output.length + ' requirements';
+//alert button is pausing server side until ok button is pressed --- needs to be continuous
+ var progressResponse = ui.alert(htmlOutputSuccess);
+        
+        
+        
+        
+         }//end of for loop
+   Logger.log(response);
  } else if (alertResponse == ui.Button.NO) {
    Logger.log('User cancelled');
+   var response = "Cancelled"; 
  } else {
+    var response = "Close Button Clicked"; 
    Logger.log('The user clicked the close button in the dialog\'s title bar.');
  }
-  
   return response;
 } 
 
 
-//only recognizes if it is or isn't 0
 
 
 
@@ -445,3 +476,35 @@ function okWarn(dialog) {
     var ui = DocumentApp.getUi();
     var response = ui.alert(dialog, ui.ButtonSet.OK);
 }
+
+
+
+
+/*
+ *
+ * ==============
+ * STATUS MESSAGES
+ * ==============
+ *
+ */
+//modal that displays the status of each artifact sent
+
+
+function okWarn(dialog) {
+    var ui = DocumentApp.getUi();
+    var response = ui.alert(dialog, ui.ButtonSet.OK);
+}
+
+
+// Alert pop up for export success
+// @param: message - string sent from the export function
+function exportSuccess(message) {
+    if (message ==  STATUS_ENUM.allSuccess) {
+        okWarn("All done!");
+    } else if (message == STATUS_ENUM.someError) {
+        okWarn("Sorry, but there were some problems. Check the notes on the relevant ID field for explanations.");
+    } else if (message == STATUS_ENUM.alLError){
+        okWarn("We're really sorry, but we couldn't send anything to SpiraTeam - please check notes on the ID fields  for more information.");
+    }
+}
+

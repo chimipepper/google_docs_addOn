@@ -132,7 +132,7 @@
             </button>
         </div> <!--end of btn-group div-->
      
-        <ul class="form">      <!--where is end of ul??-->
+        <ul class="form">      
           <li class="form-pair">
             <label 
                 class="form-label" 
@@ -156,25 +156,17 @@
             </label>
             <select 
                 class="form-input"
-                disabled="true"
+               
                 id="select-artifact" 
-                >
+                > 
+                  <option value="requirements">Requirements</option>
                 <!--aysnc populated -->
+                <!--disabled="true" --> 
             </select>
             </li>
             </ul>  <!--end of form ul-->
             <!--</label>-->
         
-        
-      <!--  <div class="pt-md">
-            <button 
-                onclick="clearSheetAttempt()"
-                title="Manually wipe the current sheet of all data"
-                type="button"
-                >
-                Clear
-            </button>
-        </div>  <!--end of pt-md class-->
         
         <div class="pt-lg">
             <div style="display: none" id="template-data-box">
@@ -241,7 +233,7 @@
                 title="View help for specific fields and artifacts"
                 type="button"
                 >
-                FIELDS
+                FORMAT
             </button>
         </div>
 
@@ -316,29 +308,43 @@
         
         
         <div id="help-section-fields" class="help-section hidden">
-            <h4>Help For Specific Fields</h4>
+            <h4>Help Page</h4>
             <ul class="list">
-             <!--   <li>
-                    <p>
-                        <b>ID Fields</b>
-                        <small>Stores the id of the item. This field MUST be left blank to add new items to SpiraTeam</small>
-                    </p>
-                </li>-->
                 <li>
                     <p>
                         <b>Name</b>
-                        <small><b>**Required Field** </b>The name of the REQUIREMENT item <br> Bold and italic formatting is currently unable to be imported to Spirateam</small>
+                        <br>The name of the REQUIREMENT 
+                        <small><b>**Requires Heading Style format** </b>
+                        
+                        <br>Format > Paragraph Styles > Heading ___ 
+                         <br> *Title and Subtitle are not supported*
+                          </small>
+                         
                     </p>
-                    <pre>
-<!--Example:
-Item 1
->Item 2 child of item 1
->Item 3 child of item 1
->>Item 4 child of item 3--> 
-*Indentation documentation goes here*
-                    </pre>
+                    
+                    
+                    
+                    <div class="indentation-description">
+                    <b>Indentation Levels</b>
+                    <br> Heading Style levels will determine the level of indentation that the requirement will have within the Spirateam requirement list
+                    <br>-The greater the heading value, the greater the indent value will be for that requirement in relation to the previous requirement
+                    <br>Example:
+                    <br>Heading 1
+                    <p> >Heading 2</p>
+                    <p>    >>Heading 3</p>
+                    
+                    
+                    </div>
+                    
+                    
+                    
+                    
                 </li>
-                
+                   <li>
+                         <b>Description</b>
+                         <br>-Any text following a Heading Style will become the description of that requirement
+                        <br> -Bold, italic, underline, and colored formatting is currently unable to be imported to Spirateam
+                        </li>
                 <li>
                     <p>
                         <b>Comments</b>
