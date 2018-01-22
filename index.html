@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html>
-
 <head>
     <base target="_top">
     <link rel="stylesheet" href="https://ssl.gstatic.com/docs/script/css/add-ons1.css">
@@ -8,17 +7,14 @@
 </head>
 
 
-
-
 <body>
-
   <header class="header">
         <img src="https://files.inflectra.com/google/sheets/spira_icon.png" class="header-logo">
-        <h3 class="header-heading">SpiraTeam Google Docs Integration</h3>
-    </header>
+        <h3 class="header-heading">SpiraTeam Document Import </h3>
+  </header>
     
     
-  <!--auth page-->
+<!--LOGIN/AUTHENTCATION PAGE-->
     <div class="panel" id="panel-auth">
         <p>Please enter the information used to access your server.</p>
         
@@ -106,7 +102,7 @@
 
 
 
-    <!--main screen-->
+<!--MAIN SCREEN-->
     <div class="panel offscreen" id="panel-main">
         <p 
             class="secondary" 
@@ -187,15 +183,8 @@
     </div> <!--end of panel-main div-->
     
     
-    
-    
-    
 
-
-
-
-
-    <!--help page-->
+<!--HELP PAGE-->
     <div class="panel offscreen" id="panel-help">
         <!-- help button and module for help page -->
         <button 
@@ -308,7 +297,7 @@
         
         
         <div id="help-section-fields" class="help-section hidden">
-            <h4>Help Page</h4>
+            <h4>Document Format</h4>
             <ul class="list">
                 <li>
                     <p>
@@ -327,13 +316,23 @@
                     <div class="indentation-description">
                     <b>Indentation Levels</b>
                     <br> Heading Style levels will determine the level of indentation that the requirement will have within the Spirateam requirement list
+                    <br><p>Note: The first requirement sent must have a Heading 1 style, as this will begin the indentation levels </p>
                     <br>-The greater the heading value, the greater the indent value will be for that requirement in relation to the previous requirement
                     <br>Example:
                     <br>Heading 1
                     <p> >Heading 2</p>
                     <p>    >>Heading 3</p>
-                    
-                    
+                    <br>
+                    <p>To keep the same indentation level, the same heading style may be applied to the relevant requriements </p>
+                    <p>Heading 1</p>
+                    <p> >Heading 2 </p>
+                    <p> >Heading 2 </p>
+                    <br>
+                    <p>Heading styles of greater value will always indent to the right , while heading styles of lesser value will be indented to the left (formatting will be as close to the heading style indentation as possible )</p>
+                    <p>Headin 1</p>
+                    <p> >Heading 4</p>
+                    <p>  >>Heading 6</p>
+                    <p> >Heading 2</p>
                     </div>
                     
                     
@@ -344,6 +343,7 @@
                          <b>Description</b>
                          <br>-Any text following a Heading Style will become the description of that requirement
                         <br> -Bold, italic, underline, and colored formatting is currently unable to be imported to Spirateam
+                        <p>Note: Images are not currently supported in this version</p>
                         </li>
                 <li>
                     <p>
@@ -357,7 +357,7 @@
     
     
 
-<!-- footer -->  
+<!-- FOOTER -->  
     <footer class="footer">
         <a href="https://www.inflectra.com" target="_blank">
             <img src="https://files.inflectra.com/google/sheets/by_inflectra.png"  class="footer-logo">
@@ -365,20 +365,12 @@
     </footer>
     
     
- <!--spinner-->
+<!--SPINNER -->
     <div id='loader' class='loader-box hidden'>
         <div class="loader"></div>
     </div>
-    
  
- 
- 
- 
- 
- 
- 
- 
- <!--Jquery-->
+<!--JQUERY-->
     <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha256-/SIrNqv8h6QGKDuNoLGA4iret+kyesCkHGzVUUV0shc=" crossorigin="anonymous"></script>    
         <?!= include('clientjs'); ?>
    <script>
