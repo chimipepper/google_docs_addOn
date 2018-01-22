@@ -169,22 +169,14 @@ function getProjects(user) {
  */
 //functions will parse through document data to create an array of objects 
 //each object will contain a Name and Description property
-//Name- name of the requirement (must have a heading style)
-//Description- description of the requirement 
-//for every new heading style, a new object will be created and any text inbetween the heading style and the next heading style will be the description for said object
+//Name- name field of the requirement (must have a heading style)
+//Description- description field of the requirement 
+//any text located between Heading styles will be loaded into the Description field of requirement
 
 
-function getArray() {
-//entire document content in an array
-  var docBody = DocumentApp.getActiveDocument().getBody();
-  var bodyNum=docBody.getNumChildren();
-//returns the all the elements individually
-  for (var i = 0; i < bodyNum; i++) {
-      var numChild= docBody.getChild(i).editAsText().getText();
-  }
+function createArtifactObjectArray() {
 //document is automatically in xml --> must be turned into html so that elements may be parsed easier
   var idName = DocumentApp.getActiveDocument().getId();
-  var forDriveScope = DriveApp.getStorageUsed();
 //google export url to get google doc text (in html format) of the specific google doc id 
   var urlName = "https://docs.google.com/feeds/download/documents/export/Export?id=" + idName + "&exportFormat=html&format=html";
   var param = {
@@ -211,11 +203,13 @@ function getArray() {
 //javascript library (himalya.js)- javascript html to json parser
 //https://github.com/andrejewski/himalaya
 //himalya will parse through html and identify elements with heading styles --> will create new objects and will each be assigned as the name property of the object
-//text in between elements with heading styles will be saved as description property in a rich text format to keep their formatting as close to the original as possible 
+//text in between heading styles will be saved as description property in a rich text format to keep their formatting as close to the original as possible 
   var htmlBlob = himalaya.parse(html); 
 //htmlBlob returns array of html children as objects
 //output is final array that will store the objects once they are created and properties are assigned to them --> will be sent to client side
   var output = [];  
+  
+  
 //createArtifact function- assigns name property of object and creates a description array    
  function createArtifact(i, htmlBlob) {
   var result = {};
@@ -223,6 +217,7 @@ function getArray() {
     result.name = htmlBlob[i].children[0].content,
     result.description = [];
 //4. for loop through htmlBlob again (but only refer to element after current element) and if tagName is not a heading, push it to the description array    
+   
 //starts where index of your heading tag ended 
 //5. else if it IS a heading, it'll stop the loop but the first loop will keep going through the elements array and will keep repeating every time it finds a heading and from there, the function will keep running 
     for (var x = i + 1; x < htmlBlob.length; x++) {
@@ -230,11 +225,12 @@ function getArray() {
        break;       
        }
       else { 
+        
 //6. elements with content will be saved as description of the object
-          if (htmlBlob[x].tagName  === "p" || htmlBlob[x].tagName  === "ol"){
+          if (htmlBlob[x].tagName  === "p" || htmlBlob[x].tagName  === "ol" || htmlBlob[x].tagName  === "ul"){
              var getContent = htmlBlob[x].children;
 //if element is empty, the loop stops, so if statement is required to skip those with no content
-            if (getContent.length === 0.0) {
+            if (!getContent.length) {
                 continue;
             }
             else {
@@ -250,14 +246,16 @@ function getArray() {
   
 //1. loop through entire parsed html array 
   for (var i= 0; i< htmlBlob.length; i++) {
+    
 //2. categorize heading tags (by tagName properties) and create objects (no assignments yet) 
   if (htmlBlob[i].tagName === "h1" || htmlBlob[i].tagName  === "h2" || htmlBlob[i].tagName  === "h3"|| htmlBlob[i].tagName  === "h4"|| htmlBlob[i].tagName  === "h5"|| htmlBlob[i].tagName  === "h6"){
+    
 //3. obj is object created from createArtifact function --> as each object is returned, it will be pushed to final output array
 //@param: i- current index of htmlBlob
 //@param: htmlBlob- parsed html array
    var obj = createArtifact (i, htmlBlob); 
 //himalaya.stringify will save html format of description as a string for rich text    
-   var finalObj = obj;
+    var finalObj = {};
       finalObj.Description = himalaya.stringify(obj.description); 
       finalObj.Name = obj.name 
       finalObj.RequirementTypeId= 4;
@@ -299,7 +297,7 @@ function getArray() {
    } //end of else statement
   } //end of first for loop
  return output;
-}// end of getArray function --> returns to client side
+}// end of createArtifactObjectArray function --> returns to client side
   
 
 
@@ -331,7 +329,6 @@ function poster(body, currentUser, postUrl) {
     };
 //call Google fetch function
   var response = UrlFetchApp.fetch(fullUrl, params);
-  Logger.log(response);
 //returns parsed JSON
 //unparsed response contains error codes if needed
  return response; //-->returns to indentation function
@@ -373,22 +370,18 @@ function getIndentSum (currentIndex, current,output, previous) {
 //@param: current- the headingValue of the currentIndex
 //@param: output- the array of document objects
  function indentation(currentIndex,output, previousIndex, nextIndex) { 
-//1. compare the headingValues of currentIndex object and previousIndex object of output array 
-//2. if the currentIndex headingValue > previous obj H, object will be indented indent position= 1 AND add 1 to indentSum
-//3. if current obj H = previous obh H, indent position = 0 AND add 0 to indentSum
-//4. if current obj H < previous obj H, indent position = indentSum - obj.indentPosition IF the indentSum > indentPosition
-                                      //indent position = 0 IF indentSum < indentPosition 
-//5. if going back to H1, indentSum is reset to 0- if it's not output[0] and H1, reset to 0 
-   var current= currentIndex.headingValue;
+//compare the headingValues of currentIndex object and previousIndex object of output array 
+
+   var current= currentIndex.headingValue; 
    if (currentIndex === output[0]) {
      if (current !== 1 && nextIndex !== 1){
-          var headingAlert = DocumentApp.getUi();
-          var alertMessage = headingAlert.alert('Error: Please change the formatting of the first title to Heading1');
-          var indentPositionValue = 30;
-          return indentPositionValue;
+        var headingAlert = DocumentApp.getUi();
+        var alertMessage = headingAlert.alert('Error: Please change the formatting of the first title to Heading1');
+        var indentPositionValue = "Change Heading";
+        return indentPositionValue;
        }
      if (current !== 1){
-      var indentPositionValue = 20;
+      var indentPositionValue = "Skip Object";
       return indentPositionValue;
      }
      var previous= 0;
@@ -396,36 +389,41 @@ function getIndentSum (currentIndex, current,output, previous) {
      var indentPositionValue = -10
    }
     else {
+//if H1, indentSum is reset to 0- if it's not output[0] and H1, reset to 0 
       var previous = previousIndex.headingValue;
       if (current ===1) {
-        var indentPositionValue = -10;
+        var indentPositionValue = -6;
         getIndentSum(currentIndex, current, output, previous); 
         return indentPositionValue;
       }
+//if current obj H = previous obj H, indent position = 0 AND add 0 to indentSum
       if (current- previous === 0){
         var indentPositionValue = 0;
         getIndentSum(currentIndex, current, output, previous); 
       }
+//if the currentIndex headingValue > previous obj H, object will be indented indent position= 1 AND add 1 to indentSum
       if (current- previous >= 1){
         var indentPositionValue = 1;
         getIndentSum(currentIndex, current,output, previous); 
       }
+//if current obj H < previous obj H, indent position = indentSum - obj.indentPosition IF the indentSum > indentPosition
       if (current- previous < 0){
         var currentIP = currentIndex.indentPosition;
       if (indentSum >= currentIP) {
         var indentPositionValue= currentIP-indentSum;
         getIndentSum(currentIndex, current, output, previous); 
       }
+//indent position = 0 IF indentSum < indentPosition          
       if (indentSum < currentIP) {
         var indentPositionValue= 0;
       }    
     }
    }// end of else statement
  return indentPositionValue;
-} //end of indentation function --> return to postToSpira function
+} //end of indentation function --> return to postAllArtifactsToSpira function
 
 
-function postToSpira(user, output,selectedProject) {
+function postAllArtifactsToSpira(user, output,selectedProject) {
 // Display a dialog box with a message asking user if they'd like to continue, and "Yes" and "No" buttons
 // user can also close the dialog by clicking the close button in its title bar.
   var ui = DocumentApp.getUi();
@@ -434,13 +432,13 @@ function postToSpira(user, output,selectedProject) {
 //if "Yes", poster function will run
   if (alertResponse == ui.Button.YES) {
    for (var t= 0; t< output.length; t++) {
-//if document's first object does not have a heading 1 style, user must change it- error message will occur
+//if document's first object does not have a heading 1 style, this object will be skipped
      var indentPosition= indentation(output[t],output,output[t-1], output[t+1])
-     if (indentPosition === 20) {
+     if (indentPosition === "Skip Object") {
        continue;
-// if indentposition of next index is not an h1, throw error message 
+// if indentPosition of next index of skipped index is not an h1, throw error message 
      }
-     if (indentPosition === 30) {
+     if (indentPosition === "Change Heading") {
        var response = "CHANGE HEADING";
        break;
      }
@@ -463,7 +461,7 @@ function postToSpira(user, output,selectedProject) {
     var response = "Close Button Clicked"; 
  }
  return JSON.parse(response);
-} //end of postToSpira function
+} //end of postAllArtifactsToSpira function
 
 
 

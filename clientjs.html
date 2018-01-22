@@ -20,7 +20,6 @@ let devMode = true;
 // if devmode enabled, set the required fields and show the dev button
 function setDevStuff (devMode) {
     if (devMode) {
-//        $("#btn-dev").removeClass("hidden");
         user.url = "https://demo.spiraservice.net/jlee";
         user.userName = "fredbloggs";
         user.api_key = "{7A05FD06-83C3-4436-B37F-51BCF0060483}";
@@ -160,19 +159,18 @@ function showMainPanel () {
  * ==============
  *
  */
- //collect data from document to send to Spira 
+//collect data from document to send to Spira 
 //save data as objects within an array
 function sendToSpiraAttempt(){
   google.script.run
-             .withSuccessHandler(sendArtifactToSpira)
-             .getArray();
+        .withSuccessHandler(sendArtifactToSpira)
+        .createArtifactObjectArray();
 };
      
 function sendArtifactToSpira (output) {
 //selectedProject is the index of the selected project (in projects dropdown) that the user would like to send the requirements to
   var selectedProject = document.getElementById("select-project").selectedIndex;
-  console.log(selectedProject);
-//if user does not select a project before sending to Spira, an error message will occur (function will not run as well)
+//if user does not select a project before sending to Spira, an error message will occur (function will not run)
 if (selectedProject=== 0) {
         google.script.run 
         .okWarn('Please select a project');
@@ -180,40 +178,36 @@ if (selectedProject=== 0) {
  }
   showLoadingSpinner();
 
-//postToSpira -server side function will make a post request to Spira
+//postAllArtifactsToSpira -server side function will make a post request to Spira
 //@param: user- global variable containing user input information
-//@param: output- array of data objects resulting from previous getArray() function
+//@param: output- array of data objects from previous createArtifactObjectArray() function
 //@param: selectedProject- variable containing the index number of the project user has selected
 //if function is interrupted, error message will occur
-for (var b=0; b<output.length;b++) {
-console.log(output[b]);
-}
    google.script.run 
-     .withFailureHandler(attemptError)
+     .withFailureHandler(postAttemptError)
      .withSuccessHandler(postResponse)
-     .postToSpira(user,output,selectedProject);
+     .postAllArtifactsToSpira(user,output,selectedProject);
+} 
+function postAttemptError () {
+ hideLoadingSpinner();
 }
 
-//response is returned from server-side postToSpira function
+
+//response is returned from server-side postAllArtifactsToSpira function
 function postResponse (response) {
-  console.log(response);
   if (response === "Cancelled") {
-    console.log("USER HAS CANCELLED");
     hideLoadingSpinner();
     return;
    }
   if (response === "CHANGE HEADING") {
-    console.log("USER MUST CHANGE HEADING STYLE");
     hideLoadingSpinner();
     return;
    }
   if (response === "Close Button Clicked") {
-    console.log("USER CLCIKED CLOSE BUTTON");
     hideLoadingSpinner();
     return;
    }
   if (response === "Authentication failed") {
-    console.log("USER DOES NOT HAVE PERMISSION");
     hideLoadingSpinner();
     return;
    }
@@ -228,10 +222,8 @@ function postResponse (response) {
 function finalConsole() {
   console.log("POST WORKED");
 }
-function attemptError () {
- hideLoadingSpinner();
-  console.log("Spira attempt failed");
-}
+
+
 
 
 
@@ -246,7 +238,6 @@ function attemptError () {
  */
 // run server side code to manage logout
 function logoutAttempt () {
-   console.log("Logout Attempt");
 //warns user that they will be logged out- Yes or No buttons --> returns a true/false value
    google.script.run
        .withSuccessHandler(logout)
@@ -255,7 +246,6 @@ function logoutAttempt () {
 // @param: shouldLogout - a true or false value from google
 function logout (shouldLogout) {
    if (shouldLogout) {
-   console.log("Logout Attempt Success");
    resetSidebar();
    }
 }
@@ -265,9 +255,6 @@ function resetSidebar () {
     $('#input-url, #input-userName, #input-password').val('');
 // hide other panels, so login page is visible
     $(".panel:not(#panel-auth)").addClass("offscreen");
-    
-// reset anything required if in devmode
-//    setDevStuff();
 }
 
 
