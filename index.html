@@ -86,7 +86,7 @@
                 >
                 Help
             </button>
-             <!-- Dev mock login data button. For developement only -->  
+            <!-- Dev mock login data button. For developement only -->  
             <button
                 id="btn-dev"
                 onclick="setAuthDetails()"
@@ -94,7 +94,7 @@
                 type="button"
                 >
                 Dev
-            </button>
+            </button> 
         </div><!--end of mt-md-->
     </div> <!--end of panel auth div--> 
 
@@ -272,12 +272,6 @@
                         <small>Select a project from the menu.</small>
                     </p>
                 </li>
-               <!-- <li>
-                    <p>
-                        <b>Artifacts</b>
-                        <small>Select an artifact from the menu.</small>
-                    </p>
-                </li>-->
                 <li>
                     <p>
                         <b>Send to SpiraTeam</b>
@@ -302,48 +296,58 @@
                 <li>
                     <p>
                         <b>Name</b>
-                        <br>The name of the REQUIREMENT 
-                        <small><b>**Requires Heading Style format** </b>
-                        
-                        <br>Format > Paragraph Styles > Heading ___ 
-                         <br> *Title and Subtitle are not supported*
-                          </small>
-                         
+                        <br>Name field of the requirement (Requires Heading Style format)
+                        <small>
+                        <br>
+                        Format > Paragraph Styles > Heading ___ 
+                        <br> 
+                        <br>
+                        <b>Note:</b> Title and Subtitle are not supported
+                        </small>
+                        <br>
+                        <small><b>Note:</b> Special characters will be translated due to security reasons by Google Docs</small>  
+ 
                     </p>
                     
                     
                     
                     <div class="indentation-description">
                     <b>Indentation Levels</b>
-                    <br> Heading Style levels will determine the level of indentation that the requirement will have within the Spirateam requirement list
-                    <br><p>Note: The first requirement sent must have a Heading 1 style, as this will begin the indentation levels </p>
-                    <br>-The greater the heading value, the greater the indent value will be for that requirement in relation to the previous requirement
+                    <br> 
+                    <small>Heading Style levels will determine the level of indentation that the requirement will have within the Spirateam requirement list </small>
+                
+                    <br>
+                    <small><p><b>Note:</b> The first requirement sent must have a Heading 1 style, as this will set the indentation levels </p></small>
+                    <small><p>Heading styles of greater value will always indent to the right, while heading styles of lesser value will be indented to the left (formatting will be as close to the heading style indentation as possible )</p></small>
                     <br>Example:
                     <br>Heading 1
                     <p> >Heading 2</p>
                     <p>    >>Heading 3</p>
                     <br>
-                    <p>To keep the same indentation level, the same heading style may be applied to the relevant requriements </p>
+                    <small><p>To keep the same indentation level, the same heading style may be applied to the relevant requirements </p></small>
+                    <p>Example:</p>
                     <p>Heading 1</p>
                     <p> >Heading 2 </p>
                     <p> >Heading 2 </p>
                     <br>
-                    <p>Heading styles of greater value will always indent to the right , while heading styles of lesser value will be indented to the left (formatting will be as close to the heading style indentation as possible )</p>
-                    <p>Headin 1</p>
+                    <small><p>The Add-In will attempt to match the formatted used in the Google document. However because of some differences between Google Docs and HTML, it may not be exact.</p></small>
+                    <p>Example:</p>
+                    <p>Heading 1</p>
                     <p> >Heading 4</p>
                     <p>  >>Heading 6</p>
                     <p> >Heading 2</p>
+                    <br> 
+
                     </div>
-                    
-                    
-                    
-                    
+                   
                 </li>
                    <li>
                          <b>Description</b>
-                         <br>-Any text following a Heading Style will become the description of that requirement
-                        <br> -Bold, italic, underline, and colored formatting is currently unable to be imported to Spirateam
-                        <p>Note: Images are not currently supported in this version</p>
+                         <br>
+                         Any text located between the selected styles will be loaded into the Description field of the requirement
+                        <br> 
+                        <br>
+                        <small><b>Note:</b>Images, Bold, italic, underline, and colored formatting is currently unable to be imported to Spirateam </small>
                         </li>
                 <li>
                     <p>
